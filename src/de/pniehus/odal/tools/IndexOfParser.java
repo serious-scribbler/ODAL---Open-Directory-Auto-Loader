@@ -19,6 +19,27 @@ import org.jsoup.select.Elements;
 public class IndexOfParser {
 	
 	private List<String> dirs = new ArrayList<String>();
+	public boolean enableSizeFetch = false;
+	
+	/**
+	 * Size fetching allows to see the total file size before the download is finnished
+	 * This is really time consuming (average 150-175ms) and therefore only recommended for directories
+	 * with a scmall amount of files
+	 * @param enableSizeFetching
+	 */
+	public IndexOfParser(boolean enableSizeFetching){
+		setSizeFetching(enableSizeFetching);
+	}
+	
+	/**
+	 * Size fetching allows to see the total file size before the download is finnished
+	 * This is really time consuming (average 150-175ms) and therefore only recommended for directories
+	 * with a scmall amount of files
+	 * @param enableSizeFetching
+	 */
+	public void setSizeFetching(boolean b){
+		enableSizeFetch = b;
+	}
 	
 	public RemoteFile parseURL(String url, boolean parseSubdirs,
 			String directoryName) throws IOException {
@@ -49,19 +70,41 @@ public class IndexOfParser {
 			name = java.net.URLDecoder.decode(name, "UTF-8");
 
 			try {
-				URLInfo linkInfo = getInfo(currentLink);
-				if (isDirectory(linkInfo, currentLink)) {
-					if (parseSubdirs) {
-						if(dirs.contains(currentLink)) continue;
-						dirs.add(currentLink);
-						RemoteFile sub = parse(currentLink, true, name);
-						if (sub != null)
-							tree.add(sub);
+				long filesize = 0;
+				if(enableSizeFetch){
+					
+					URLInfo linkInfo = getInfo(currentLink);
+					if (isDirectory(linkInfo, currentLink)) {
+						if (parseSubdirs) {
+							if(dirs.contains(currentLink)) continue;
+							dirs.add(currentLink);
+							RemoteFile sub = parse(currentLink, true, name);
+							if (sub != null)
+								tree.add(sub);
+						}
+						continue;
 					}
-					continue;
+					filesize = linkInfo.size;
+				} else{
+					if(currentLink.charAt(currentLink.length() - 1) == '/'){
+						// Ordner oder site
+						if(parseSubdirs){
+							URLInfo linkInfo = getInfo(currentLink);
+							if (isDirectory(linkInfo, currentLink)) {
+								if(dirs.contains(currentLink)) continue;
+								dirs.add(currentLink);
+								RemoteFile sub = parse(currentLink, true, name);
+								if (sub != null)
+									tree.add(sub);
+							}
+						}
+						continue;
+					}
 				}
+				
 				RemoteFileInfo info = new RemoteFileInfo(currentLink,
-						linkInfo.size);
+						filesize);
+				
 				tree.add(new RemoteFile(name, info));
 			} catch (IOException ioE) {
 				continue; // TODO maybe handle better
@@ -80,7 +123,7 @@ public class IndexOfParser {
 	 * @return
 	 */
 	private boolean isDirectory(URLInfo info, String link) {
-		if (info.mimetype.contains("html")) {
+		if ((link.charAt(link.length() -1) == '/') && info.mimetype.contains("html")) {
 			try {
 				Document doc = Jsoup.connect(link).get();
 				if (doc.title().contains("Index of")) {

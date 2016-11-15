@@ -10,9 +10,10 @@ import java.util.Scanner;
 
 public class Maintest {
 	public static void main(String[] args) throws IOException {
-		IndexOfParser parse = new IndexOfParser();
-		RemoteFile root = parse.parseURL("http://www.secs.oakland.edu/~latcha/me486/", true, "root");
-		
+		IndexOfParser parse = new IndexOfParser(false);
+		long t = System.currentTimeMillis();
+		RemoteFile root = parse.parseURL("http://vuduberi.com/journal/", true, "root");
+		System.out.println(System.currentTimeMillis() - t);
 		final TaskController k = new TaskController("test", false, root, new File("D:/load"));
 		k.addMonitor(new TaskMonitor() {
 			
@@ -25,7 +26,6 @@ public class Maintest {
 		System.out.println("Start download (yes/no):");
 		Scanner s = new Scanner(System.in);
 		if(s.next().equals("yes")) k.start();
-		
 	}
 	
 	private static int getFileSize(URL url) {
