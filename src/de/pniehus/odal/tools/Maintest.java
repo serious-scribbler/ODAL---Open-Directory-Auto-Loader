@@ -1,7 +1,12 @@
 package de.pniehus.odal.tools;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class Maintest {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MalformedURLException {
 		RemoteFile root = new RemoteFile("root");
 		root.add(new RemoteFile("lamefile", new RemoteFileInfo("http://example.com", 1024l)));
 		root.add(new RemoteFile("coolfile", new RemoteFileInfo("http://example.com", 1024l*1024l)));
@@ -12,5 +17,19 @@ public class Maintest {
 		System.out.println("treeSize: " + RemoteFile.countSize(root));
 		System.out.println("Number of files: " + RemoteFile.countFiles(root));
 		
+	}
+	
+	private static int getFileSize(URL url) {
+	    HttpURLConnection conn = null;
+	    try {
+	        conn = (HttpURLConnection) url.openConnection();
+	        conn.setRequestMethod("HEAD");
+	        conn.getInputStream();
+	        return conn.getContentLength();
+	    } catch (IOException e) {
+	        return -1;
+	    } finally {
+	        conn.disconnect();
+	    }
 	}
 }

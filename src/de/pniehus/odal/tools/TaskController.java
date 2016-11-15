@@ -1,6 +1,8 @@
 package de.pniehus.odal.tools;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
@@ -19,6 +21,8 @@ public class TaskController{
 	
 	private RemoteFile files;
 	private File outputDirectory;
+	
+	private List<TaskMonitor> monitors = new ArrayList<TaskMonitor>();
 	
 	private Task t;
 		
@@ -69,7 +73,25 @@ public class TaskController{
 	public void fileFinnished(long size){
 		sizeLeft -= size;
 		filesLeft--;
-		// TODO notifiy monitors
+		for(TaskMonitor monitor : monitors){
+			monitor.taskUpdated(sizeLeft, filesLeft, ((t.isRunning) ? timeElapsed + (System.currentTimeMillis() - started): timeElapsed));
+		}
+		// backup task
 	}
 	
+	/**
+	 * Adds a task monitor to the list of monitors, which will receive updates, everytime a file has been downloaded
+	 * @param m
+	 */
+	public void addMonitor(TaskMonitor m){
+		monitors.add(m);
+	}
+	
+	/**
+	 * Removes the given monitor from the list of monitors
+	 * @param m
+	 */
+	public void removeMonitor(TaskMonitor m){
+		if(monitors.contains(m)) monitors.remove(m);
+	}
 }
