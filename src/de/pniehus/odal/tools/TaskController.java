@@ -23,7 +23,9 @@ public class TaskController {
 
 	private long sizeLeft;
 	private int filesLeft;
-
+	
+	// TODO add a list and a method to store errors, maybe error listeners
+	
 	private RemoteFile files;
 	private File outputDirectory;
 

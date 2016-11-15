@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 public class Maintest {
-	public static void main(String[] args) throws MalformedURLException {
+	public static void main(String[] args) throws IOException {
 		RemoteFile root = new RemoteFile("root");
 		root.add(new RemoteFile("lamefile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
 		root.add(new RemoteFile("coolfile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
@@ -24,6 +25,7 @@ public class Maintest {
 			}
 		});
 		k.start();
+
 	}
 	
 	private static int getFileSize(URL url) {
