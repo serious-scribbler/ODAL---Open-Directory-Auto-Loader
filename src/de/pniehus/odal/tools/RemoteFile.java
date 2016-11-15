@@ -3,7 +3,11 @@ package de.pniehus.odal.tools;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-
+/**
+ * A tree representation for files on a web server, accessed via url
+ * @author Phil Niehus
+ *
+ */
 public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;

@@ -11,6 +11,11 @@ import java.nio.channels.ReadableByteChannel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+/**
+ * A task executes the download of a RemoteFile
+ * @author Phil Niehus
+ *
+ */
 public class Task implements Runnable{
 	
 	
@@ -19,6 +24,10 @@ public class Task implements Runnable{
 	
 	private TaskController ctrl;
 	
+	/**
+	 * Creates a task with the corresponding task controller
+	 * @param ctrl
+	 */
 	public Task(TaskController ctrl){
 		this.ctrl = ctrl;
 	}
@@ -32,6 +41,10 @@ public class Task implements Runnable{
 		isRunning = false;
 	}
 	
+	/**
+	 * Downloads the complete filetree from the server
+	 * @param file
+	 */
 	private void loadFile(RemoteFile file){
 		if(file.isDirectory()){
 			RemoteFile current = (RemoteFile) file.getFirstChild();
