@@ -32,7 +32,14 @@ public class TaskController {
 	private List<TaskMonitor> monitors = new ArrayList<TaskMonitor>();
 
 	private Task t;
-
+	
+	/**
+	 * Creates and manages a task controller for a download with the following params
+	 * @param name The name of the task
+	 * @param keepStructure Determines, if the original file structure will be kept
+	 * @param fileTree The file structure which will be downloaded
+	 * @param outputDirectory The path, where the downloaded files will be saved
+	 */
 	public TaskController(String name, boolean keepStructure, RemoteFile fileTree, File outputDirectory){
 		if(fileTree == null){
 			throw new IllegalArgumentException("The root directory may not be empty");
@@ -42,7 +49,7 @@ public class TaskController {
 		}
 		this.outputDirectory = outputDirectory;
 		this.name = name;
-		this.keepStructure = true;
+		this.keepStructure = keepStructure;
 		this.files = fileTree;
 		
 		numberOfFiles = RemoteFile.countFiles((TreeNode) files);

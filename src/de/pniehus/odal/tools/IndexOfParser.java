@@ -11,6 +11,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * Parses index of pages for files
+ * @author Phil Niehus
+ *
+ */
 public class IndexOfParser {
 	
 	private List<String> dirs = new ArrayList<String>();
@@ -26,7 +31,6 @@ public class IndexOfParser {
 			String directoryName) throws IOException {
 		if (url == null)
 			throw new NullPointerException("URLS may not be null");
-		System.out.println("Parsing: " + url);
 		
 		dirs.add(url);
 		
