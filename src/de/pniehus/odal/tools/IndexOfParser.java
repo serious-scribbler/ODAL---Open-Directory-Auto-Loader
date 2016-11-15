@@ -130,8 +130,7 @@ public class IndexOfParser {
 					return true;
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// TODO handle?
 			}
 		}
 		return false;
