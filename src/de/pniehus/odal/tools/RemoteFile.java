@@ -6,7 +6,7 @@ import javax.swing.tree.TreeNode;
 public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;
-	
+	private String path;
 	/**
 	 * Creates a RemoteFile as a single file with the given name and info
 	 * @param name The name of the File
@@ -15,7 +15,20 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	public RemoteFile(String name, RemoteFileInfo info){
 		super(info);
 		this.name = name;
+		if(name == null) name = "unknown";
 		setAllowsChildren(false);
+	}
+	
+	/**
+	 * Sets the path string according to the path to the root directory
+	 */
+	private void setPathString(){
+		if(isRoot()){
+			path = "";
+		} else{
+			path = ((RemoteFile) getParent()).getPathString() + name;
+			if(isDirectory()) path = path + "/";
+		}
 	}
 	
 	/**
@@ -25,6 +38,16 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	public RemoteFile(String name){
 		super();
 		this.name = name;
+		if(name == null) name = "unknown";
+	}
+	
+	/**
+	 * Returns the path of this file as string
+	 * @return
+	 */
+	public String getPathString(){
+		if(path == null) setPathString();
+		return path;
 	}
 	
 	/**

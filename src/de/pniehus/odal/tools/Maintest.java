@@ -1,5 +1,6 @@
 package de.pniehus.odal.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -8,15 +9,21 @@ import java.net.URL;
 public class Maintest {
 	public static void main(String[] args) throws MalformedURLException {
 		RemoteFile root = new RemoteFile("root");
-		root.add(new RemoteFile("lamefile", new RemoteFileInfo("http://example.com", 1024l)));
-		root.add(new RemoteFile("coolfile", new RemoteFileInfo("http://example.com", 1024l*1024l)));
-		root.add(new RemoteFile("largefile", new RemoteFileInfo("http://example.com", 1024l*1024l*120l)));
+		root.add(new RemoteFile("lamefile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
+		root.add(new RemoteFile("coolfile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
 		RemoteFile subfile = new RemoteFile("subdir");
-		subfile.add(new RemoteFile("littlefile", new RemoteFileInfo("http://example.com", 10l)));
+		subfile.add(new RemoteFile("littlefile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
 		root.add(subfile);
-		System.out.println("treeSize: " + RemoteFile.countSize(root));
-		System.out.println("Number of files: " + RemoteFile.countFiles(root));
 		
+		final TaskController k = new TaskController("test", true, root, new File("D:/load"));
+		k.addMonitor(new TaskMonitor() {
+			
+			@Override
+			public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
+					System.out.println("Progress: " + (k.getTotalSize() - sizeLeft) * 100 / k.getTotalSize() + "%");			
+			}
+		});
+		k.start();
 	}
 	
 	private static int getFileSize(URL url) {

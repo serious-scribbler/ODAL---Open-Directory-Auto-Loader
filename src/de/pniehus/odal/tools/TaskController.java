@@ -6,11 +6,16 @@ import java.util.List;
 
 import javax.swing.tree.TreeNode;
 
+/**
+ * This class is used to control the execution of a task
+ * @author Phil Niehus
+ *
+ */
 public class TaskController {
 
 	private final String name;
 	private final int numberOfFiles;
-	private final boolean keepStructure;
+	public final boolean keepStructure;
 	private final long totalSize;
 
 	private long started;
@@ -26,10 +31,14 @@ public class TaskController {
 
 	private Task t;
 
-	public TaskController(String name, boolean keepStructure, RemoteFile fileTree){
+	public TaskController(String name, boolean keepStructure, RemoteFile fileTree, File outputDirectory){
 		if(fileTree == null){
 			throw new IllegalArgumentException("The root directory may not be empty");
 		}
+		if(outputDirectory.isFile() || !outputDirectory.canWrite()){
+			throw new IllegalArgumentException("Output directory invalid or not writeable");
+		}
+		this.outputDirectory = outputDirectory;
 		this.name = name;
 		this.keepStructure = true;
 		this.files = fileTree;
@@ -39,6 +48,8 @@ public class TaskController {
 		
 		t = new Task(this);
 		timeElapsed = 0;
+		filesLeft = numberOfFiles;
+		sizeLeft = totalSize;
 	}
 	
 	/**
@@ -96,7 +107,7 @@ public class TaskController {
 	public long getTotalSize() {
 		return totalSize;
 	}
-
+	
 	/**
 	 * Starts the tasks execution
 	 */
