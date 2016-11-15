@@ -9,12 +9,8 @@ import java.net.URL;
 
 public class Maintest {
 	public static void main(String[] args) throws IOException {
-		RemoteFile root = new RemoteFile("root");
-		root.add(new RemoteFile("lamefile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
-		root.add(new RemoteFile("coolfile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
-		RemoteFile subfile = new RemoteFile("subdir");
-		subfile.add(new RemoteFile("littlefile.pdf", new RemoteFileInfo("CENSORED", 1024l)));
-		root.add(subfile);
+		IndexOfParser parse = new IndexOfParser();
+		RemoteFile root = parse.parseURL("http://www.secs.oakland.edu/~latcha/me486/", true, "root");
 		
 		final TaskController k = new TaskController("test", true, root, new File("D:/load"));
 		k.addMonitor(new TaskMonitor() {
@@ -24,8 +20,8 @@ public class Maintest {
 					System.out.println("Progress: " + (k.getTotalSize() - sizeLeft) * 100 / k.getTotalSize() + "%");			
 			}
 		});
-		k.start();
-
+		//k.start();
+		System.out.println(root);
 	}
 	
 	private static int getFileSize(URL url) {

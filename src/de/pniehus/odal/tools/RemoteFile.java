@@ -3,6 +3,7 @@ package de.pniehus.odal.tools;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+
 public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;
@@ -103,5 +104,48 @@ public class RemoteFile extends DefaultMutableTreeNode{
 			size += (node.isDirectory()) ? countSize((TreeNode) node) : node.getFileInfo().getSize();
 		}
 		return size;
+	}
+	
+	@Override
+	public String toString(){
+		return getStringRepresentation(this, 0);
+	}
+	
+	/**
+	 * Returns a String representation for the given file tree
+	 * @param root
+	 * @param depth the depth of the tree
+	 * @return
+	 */
+	private String getStringRepresentation(TreeNode root, int depth){
+		String rep = "";
+		if(depth == 0) rep += "+" + ((RemoteFile)root).getName() + "\n";
+		depth++;
+		int childcount = root.getChildCount();
+		for(int i = 0; i < childcount; i++){
+			RemoteFile node = (RemoteFile) root.getChildAt(i);
+			if(node.isDirectory()){
+				rep += repeatChar(' ', depth*2-2) + "+[" + node.getName() + "]\n";
+				rep += getStringRepresentation(node, depth++);
+			} else{
+				rep += repeatChar(' ', depth*2-2) + "|" + node.getName() + "\n";
+			}
+		}
+		depth--;
+		return rep;
+	}
+	
+	/**
+	 * Repeats c n times
+	 * @param c
+	 * @param n
+	 * @return
+	 */
+	private String repeatChar(char c, int n){
+		String s = "";
+		for(int i = 0; i < n; i++){
+			s += c;
+		}
+		return s;
 	}
 }
