@@ -11,5 +11,6 @@ public class Maintest {
 		root.add(subfile);
 		System.out.println("treeSize: " + RemoteFile.countSize(root));
 		System.out.println("Number of files: " + RemoteFile.countFiles(root));
+		
 	}
 }

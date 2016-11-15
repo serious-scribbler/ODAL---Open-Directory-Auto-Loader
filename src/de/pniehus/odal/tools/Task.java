@@ -5,38 +5,32 @@ import java.io.File;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-public class Task extends Thread{
+public class Task implements Runnable{
 	
-	private boolean keepStructure = true;
-	private RemoteFile files;
-	private long started;
-	private final String name;
-	private long sizeLeft;
-	private final int numberOfFiles;
-	private int filesLeft;
-	private final long totalSize;
-	private long timeElapsed;
-	private File outputDirectory;
 	
-	public Task(String name, boolean keepStructure, RemoteFile files, File outputDirectory){
-		this(name, files, outputDirectory);
-		this.keepStructure = keepStructure;
+	private boolean keepRunning = true;
+	protected transient boolean isRunning = false;
+	
+	private TaskController ctrl;
+	
+	public Task(TaskController ctrl){
+		this.ctrl = ctrl;
+	}
+
+	@Override
+	public void run() {
+		while(keepRunning){
+			isRunning = true;
+		}
+		isRunning = false;
 	}
 	
-	public Task(String name, RemoteFile files, File outputDirectory){
-		super(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		this.name = name;
-		this.files = files;
-		this.outputDirectory = outputDirectory;
-		numberOfFiles = RemoteFile.countFiles((TreeNode) files);
-		totalSize = RemoteFile.countSize((TreeNode) files);
+	/**
+	 * This state is used to stop the runnable after the current download, it continues execution if set to true
+	 * @param state
+	 */
+	public void setRunningState(boolean state){
+		keepRunning = state;
 	}
+	
 }
