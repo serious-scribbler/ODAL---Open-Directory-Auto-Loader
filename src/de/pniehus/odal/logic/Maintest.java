@@ -21,9 +21,6 @@ import de.pniehus.odal.utils.DeepCopy;
 
 public class Maintest {
 	public static void main(String[] args) throws Exception {
-		Gui g = new Gui();
-		g.setVisible(true);
-		Thread.sleep(50000);
 		IndexOfParser parse = new IndexOfParser(false);
 		JFrame test = new JFrame("Running");
 		test.setSize(new Dimension(1280, 720));
