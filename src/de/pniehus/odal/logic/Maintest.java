@@ -38,18 +38,4 @@ public class Maintest {
 		Scanner s = new Scanner(System.in);
 		if(s.next().equals("yes")) k.start();
 	}
-	
-	private static int getFileSize(URL url) {
-	    HttpURLConnection conn = null;
-	    try {
-	        conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("HEAD");
-	        conn.getInputStream();
-	        return conn.getContentLength();
-	    } catch (IOException e) {
-	        return -1;
-	    } finally {
-	        conn.disconnect();
-	    }
-	}
 }
