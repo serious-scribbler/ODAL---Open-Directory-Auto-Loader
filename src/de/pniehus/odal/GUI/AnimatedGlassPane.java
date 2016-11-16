@@ -76,7 +76,7 @@ public class AnimatedGlassPane extends JPanel{
 	@Override
 	public void paintComponent(Graphics g){
 		setOpaque(true);
-		setBackground(new Color(64, 64, 64, 120));
+		setBackground(new Color(64, 64, 64, 140));
 		super.paintComponent(g);
 		setOpaque(false);
 	}

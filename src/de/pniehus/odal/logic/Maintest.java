@@ -1,6 +1,7 @@
 package de.pniehus.odal.logic;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -9,10 +10,12 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Scanner;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import de.pniehus.odal.GUI.AnimatedGlassPane;
 import de.pniehus.odal.GUI.GlassPaneAnimation;
+import de.pniehus.odal.GUI.LockableAnimatedPanel;
 import de.pniehus.odal.utils.DeepCopy;
 
 public class Maintest {
@@ -20,16 +23,24 @@ public class Maintest {
 		IndexOfParser parse = new IndexOfParser(false);
 		JFrame test = new JFrame("Running");
 		test.setSize(new Dimension(1280, 720));
-		AnimatedGlassPane anim = new AnimatedGlassPane(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
-		test.add(anim);
+		LockableAnimatedPanel lockable = new LockableAnimatedPanel(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
+		lockable.getContentPane().setLayout(new GridLayout(1, 3));
+		lockable.getContentPane().add(new JButton("Start"));
+		lockable.getContentPane().add(new JButton("Stop"));
+		lockable.getContentPane().add(new JButton("Nothing"));
+		test.add(lockable);
+//		AnimatedGlassPane anim = new AnimatedGlassPane(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
+//		test.add(anim);
 		test.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		test.setVisible(true);
 		long t = System.currentTimeMillis();
-		anim.start();
+		lockable.lock();
+//		anim.start();
 		RemoteFile root = parse.parseURL("http://www.qsl.net/y/yo4tnv//docs/", true, "root");
 		
 		System.out.println(System.currentTimeMillis() - t);
-		anim.stop();
+		lockable.unlock();
+//		anim.stop();
 		test.setVisible(false);
 		test.dispose();
 		final TaskController k = new TaskController("test", true, root, new File("D:/load"));

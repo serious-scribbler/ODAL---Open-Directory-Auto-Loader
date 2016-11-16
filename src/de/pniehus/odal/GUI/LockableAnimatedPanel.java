@@ -1,8 +1,14 @@
 package de.pniehus.odal.GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -24,10 +30,37 @@ public class LockableAnimatedPanel extends JLayeredPane{
 	 */
 	public LockableAnimatedPanel(GlassPaneAnimation animation){
 		lockLayer = new AnimatedGlassPane(animation);
-		super.setLayout(new GridLayout(1, 1));
+		contentLayer.setVisible(true);
 		super.add(contentLayer, new Integer(0));
 		lockLayer.setVisible(false);
 		super.add(lockLayer, new Integer(1));
+		addComponentListener(new ComponentListener() {
+			
+			@Override
+			public void componentShown(ComponentEvent e) {
+				contentLayer.setBounds(0, 0, getWidth(), getHeight());
+				lockLayer.setBounds(0, 0, getWidth(), getHeight());		
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				contentLayer.setBounds(0, 0, getWidth(), getHeight());
+				lockLayer.setBounds(0, 0, getWidth(), getHeight());
+				
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				
+				
+			}
+		});
 	}
 	
 	/**
