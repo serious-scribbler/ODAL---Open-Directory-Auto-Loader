@@ -9,6 +9,9 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.locks.Lock;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -24,11 +27,14 @@ public class LockableAnimatedPanel extends JLayeredPane{
 	
 	private AnimatedGlassPane lockLayer;
 	private JPanel contentLayer = new JPanel();
+	
 	/**
 	 * Creates a lockable panel with a lock animation
 	 * @param animation The animation to use
+	 * @throws IOException 
 	 */
-	public LockableAnimatedPanel(GlassPaneAnimation animation){
+	public LockableAnimatedPanel(GlassPaneAnimation animation) throws IOException{
+		if(animation == null) animation = new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l); // TODO remove
 		lockLayer = new AnimatedGlassPane(animation);
 		contentLayer.setVisible(true);
 		super.add(contentLayer, new Integer(0));
@@ -76,8 +82,8 @@ public class LockableAnimatedPanel extends JLayeredPane{
 	 * @return 
 	 */
 	@Override
-	public void add(Component comp, Object contstarints){
-		return;
+	public void add(Component comp, Object constraints){
+		contentLayer.add(comp, constraints);
 	}
 	
 	/**

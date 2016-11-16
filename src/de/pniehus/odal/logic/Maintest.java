@@ -25,7 +25,9 @@ public class Maintest {
 		test.setSize(new Dimension(1280, 720));
 		LockableAnimatedPanel lockable = new LockableAnimatedPanel(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
 		lockable.getContentPane().setLayout(new GridLayout(1, 3));
-		lockable.getContentPane().add(new JButton("Start"));
+		JButton st = new JButton("Start");
+		
+		lockable.getContentPane().add(st);
 		lockable.getContentPane().add(new JButton("Stop"));
 		lockable.getContentPane().add(new JButton("Nothing"));
 		test.add(lockable);
@@ -33,6 +35,9 @@ public class Maintest {
 //		test.add(anim);
 		test.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		test.setVisible(true);
+		Thread.sleep(1000);
+		st.setEnabled(false);
+		Thread.sleep(2000);
 		long t = System.currentTimeMillis();
 		lockable.lock();
 //		anim.start();
@@ -41,8 +46,7 @@ public class Maintest {
 		System.out.println(System.currentTimeMillis() - t);
 		lockable.unlock();
 //		anim.stop();
-		test.setVisible(false);
-		test.dispose();
+		
 		final TaskController k = new TaskController("test", true, root, new File("D:/load"));
 		k.addMonitor(new TaskMonitor() {
 			
@@ -63,5 +67,7 @@ public class Maintest {
 		System.out.println("Start download (yes/no):");
 		Scanner s = new Scanner(System.in);
 		if(s.next().equals("yes")) k.start();
+		test.setVisible(false);
+		test.dispose();
 	}
 }
