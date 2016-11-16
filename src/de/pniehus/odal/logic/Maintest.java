@@ -12,9 +12,9 @@ import de.pniehus.odal.utils.DeepCopy;
 
 public class Maintest {
 	public static void main(String[] args) throws Exception {
-		IndexOfParser parse = new IndexOfParser(false);
+		IndexOfParser parse = new IndexOfParser(true);
 		long t = System.currentTimeMillis();
-		RemoteFile root = parse.parseURL("http://vuduberi.com/journal/", true, "root");
+		RemoteFile root = parse.parseURL("http://www.qsl.net/y/yo4tnv//docs/", true, "root");
 		System.out.println(System.currentTimeMillis() - t);
 		final TaskController k = new TaskController("test", false, root, new File("D:/load"));
 		k.addMonitor(new TaskMonitor() {

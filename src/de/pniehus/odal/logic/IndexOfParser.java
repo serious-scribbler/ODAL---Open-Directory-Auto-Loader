@@ -1,6 +1,7 @@
 package de.pniehus.odal.logic;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -64,11 +65,10 @@ public class IndexOfParser {
 		for (Element link : links) {
 
 			String currentLink = link.attr("abs:href");
-			if(currentLink.contains("?")) continue;
-			String[] splitPath = currentLink.split("/");
-			String name = splitPath[splitPath.length - 1];
-			name = java.net.URLDecoder.decode(name, "UTF-8");
-
+			if(currentLink.contains("?") || !currentLink.contains(url)) continue;
+			
+			String name = getResourceName(currentLink);
+			
 			try {
 				long filesize = 0;
 				if(enableSizeFetch){
@@ -86,7 +86,7 @@ public class IndexOfParser {
 					}
 					filesize = linkInfo.size;
 				} else{
-					if(currentLink.charAt(currentLink.length() - 1) == '/'){
+					if(lastCharIsSlash(currentLink)){
 						// Ordner oder site
 						if(parseSubdirs){
 							URLInfo linkInfo = getInfo(currentLink);
@@ -114,6 +114,28 @@ public class IndexOfParser {
 		return tree;
 	}
 	
+	
+	/**
+	 * Checks if the last char of a link is a slash
+	 * @param link
+	 * @return
+	 */
+	private boolean lastCharIsSlash(String link){
+		return (link.charAt(link.length() -1) == '/');
+	}
+	
+	/**
+	 * Gets the files or directory's name from a link
+	 * @param link
+	 * @return
+	 * @throws UnsupportedEncodingException Does not happen
+	 */
+	private String getResourceName(String link) throws UnsupportedEncodingException{
+		String[] splitPath = link.split("/");
+		String name = splitPath[splitPath.length - 1];
+		return java.net.URLDecoder.decode(name, "UTF-8");
+	}
+	
 	/**
 	 * Checks if the given link is a directory
 	 * 
@@ -123,7 +145,7 @@ public class IndexOfParser {
 	 * @return
 	 */
 	private boolean isDirectory(URLInfo info, String link) {
-		if ((link.charAt(link.length() -1) == '/') && info.mimetype.contains("html")) {
+		if (info.mimetype.contains("html") && lastCharIsSlash(link)) {
 			try {
 				Document doc = Jsoup.connect(link).get();
 				if (doc.title().contains("Index of")) {

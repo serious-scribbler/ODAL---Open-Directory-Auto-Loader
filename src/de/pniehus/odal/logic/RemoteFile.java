@@ -11,7 +11,7 @@ import javax.swing.tree.TreeNode;
 public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;
-	public String path; // TODO set private again
+	private String path;
 	/**
 	 * Creates a RemoteFile as a single file with the given name and info
 	 * @param name The name of the File
@@ -87,7 +87,7 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 */
 	public static int countFiles(TreeNode root){
 		// TODO check if directory get counted
-		if(((RemoteFile) root).isLeaf()) return 1;
+		if(((RemoteFile) root).isLeaf() && !((RemoteFile)root).isRoot()) return 1;
 		int count = 0;
 		int children = root.getChildCount();
 		for(int i = 0; i < children; i++){
