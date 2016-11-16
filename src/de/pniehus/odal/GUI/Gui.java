@@ -30,6 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.border.LineBorder;
 
 public class Gui extends JFrame{
 	private JTextField urlField;
@@ -40,16 +41,19 @@ public class Gui extends JFrame{
 		JPanel TopBar = new JPanel();
 		
 		JPanel DirectoryPanel = new JPanel();
+		DirectoryPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JPanel FilterPanel = new JPanel();
+		FilterPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JPanel TaskPanel = new JPanel();
+		TaskPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(DirectoryPanel, GroupLayout.PREFERRED_SIZE, 592, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
@@ -65,16 +69,21 @@ public class Gui extends JFrame{
 					.addComponent(TopBar, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(DirectoryPanel, GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
-							.addContainerGap())
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(FilterPanel, GroupLayout.PREFERRED_SIZE, 564, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(TaskPanel, GroupLayout.PREFERRED_SIZE, 564, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())))
+						.addComponent(DirectoryPanel, GroupLayout.PREFERRED_SIZE, 553, Short.MAX_VALUE)
+						.addComponent(FilterPanel, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
+						.addComponent(TaskPanel, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE))
+					.addContainerGap())
 		);
+		GroupLayout gl_FilterPanel = new GroupLayout(FilterPanel);
+		gl_FilterPanel.setHorizontalGroup(
+			gl_FilterPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 322, Short.MAX_VALUE)
+		);
+		gl_FilterPanel.setVerticalGroup(
+			gl_FilterPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 564, Short.MAX_VALUE)
+		);
+		FilterPanel.setLayout(gl_FilterPanel);
 		
 		JLabel selectorLabel = new JLabel("Selector");
 		selectorLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -87,65 +96,61 @@ public class Gui extends JFrame{
 		lblSelectADirectory.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		JPanel replaceWithTree = new JPanel();
+		replaceWithTree.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JButton btnSelectAll = new JButton("Select all");
 		
 		JButton btnDeselectAll = new JButton("Deselect all");
 		GroupLayout gl_DirectoryPanel = new GroupLayout(DirectoryPanel);
 		gl_DirectoryPanel.setHorizontalGroup(
-			gl_DirectoryPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_DirectoryPanel.createSequentialGroup()
-					.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING, gl_DirectoryPanel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(replaceWithTree, GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
+			gl_DirectoryPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_DirectoryPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(replaceWithTree, GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+						.addComponent(list, GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
 						.addGroup(gl_DirectoryPanel.createSequentialGroup()
-							.addGap(273)
-							.addComponent(selectorLabel))
-						.addGroup(gl_DirectoryPanel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(list, GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
-						.addGroup(gl_DirectoryPanel.createSequentialGroup()
-							.addContainerGap()
 							.addComponent(lblSelectADirectory)
 							.addPreferredGap(ComponentPlacement.RELATED, 304, Short.MAX_VALUE)
 							.addComponent(removeThisOpenDirectory))
-						.addGroup(Alignment.LEADING, gl_DirectoryPanel.createSequentialGroup()
-							.addContainerGap()
+						.addGroup(gl_DirectoryPanel.createSequentialGroup()
 							.addComponent(btnSelectAll, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnDeselectAll, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
+				.addGroup(gl_DirectoryPanel.createSequentialGroup()
+					.addContainerGap(281, Short.MAX_VALUE)
+					.addComponent(selectorLabel)
+					.addGap(255))
 		);
 		gl_DirectoryPanel.setVerticalGroup(
 			gl_DirectoryPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_DirectoryPanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_DirectoryPanel.createSequentialGroup()
-							.addComponent(selectorLabel)
-							.addGap(31))
-						.addGroup(gl_DirectoryPanel.createSequentialGroup()
-							.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(removeThisOpenDirectory)
-								.addComponent(lblSelectADirectory))
-							.addPreferredGap(ComponentPlacement.RELATED)))
+					.addComponent(selectorLabel)
+					.addGap(13)
+					.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(removeThisOpenDirectory)
+						.addComponent(lblSelectADirectory))
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(list, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(replaceWithTree, GroupLayout.PREFERRED_SIZE, 355, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnDeselectAll, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-						.addComponent(btnSelectAll, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
-					.addContainerGap())
+					.addGroup(gl_DirectoryPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnSelectAll)
+						.addComponent(btnDeselectAll, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap(21, Short.MAX_VALUE))
 		);
 		DirectoryPanel.setLayout(gl_DirectoryPanel);
 		
 		JPanel LoadPanel = new JPanel();
+		LoadPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JPanel SimultaneousTasksPanel = new JPanel();
+		SimultaneousTasksPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JPanel ButtonPanel = new JPanel();
+		ButtonPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		GroupLayout gl_TopBar = new GroupLayout(TopBar);
 		gl_TopBar.setHorizontalGroup(
 			gl_TopBar.createParallelGroup(Alignment.LEADING)
