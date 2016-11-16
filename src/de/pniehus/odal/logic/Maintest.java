@@ -1,5 +1,6 @@
 package de.pniehus.odal.logic;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,8 +17,9 @@ import de.pniehus.odal.utils.DeepCopy;
 
 public class Maintest {
 	public static void main(String[] args) throws Exception {
-		IndexOfParser parse = new IndexOfParser(true);
+		IndexOfParser parse = new IndexOfParser(false);
 		JFrame test = new JFrame("Running");
+		test.setSize(new Dimension(1280, 720));
 		AnimatedGlassPane anim = new AnimatedGlassPane(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
 		test.add(anim);
 		test.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -28,7 +30,9 @@ public class Maintest {
 		
 		System.out.println(System.currentTimeMillis() - t);
 		anim.stop();
-		final TaskController k = new TaskController("test", false, root, new File("D:/load"));
+		test.setVisible(false);
+		test.dispose();
+		final TaskController k = new TaskController("test", true, root, new File("D:/load"));
 		k.addMonitor(new TaskMonitor() {
 			
 			@Override

@@ -24,7 +24,6 @@ public class AnimatedGlassPane extends JPanel{
 		setLayout(new GridLayout());
 		image = new JLabel(new ImageIcon(animation.getImages()[0]));
 		add(image);
-		setBackground(new Color(230, 230, 230, 60));
 	}
 	
 	/**
@@ -69,6 +68,7 @@ public class AnimatedGlassPane extends JPanel{
 	@Override
 	public void paintComponent(Graphics g){
 		setOpaque(true);
+		setBackground(new Color(64, 64, 64, 120));
 		super.paintComponent(g);
 		setOpaque(false);
 	}
