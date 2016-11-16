@@ -18,16 +18,29 @@ public class GlassPaneAnimation {
 	private Image[] images;
 	private long msBetweenImages;
 	
-	public GlassPaneAnimation(Image[] images, long msBetweenImages){
-		if(images == null || images.length < 1 || msBetweenImages == 0) throw new IllegalArgumentException("Invalid image or delay!");
+	/**
+	 * Creates an Animation for the {@link AnimatedGlassPane}
+	 * @param images An Array of images for the Animation
+	 * @param delayMs The delay after every image in ms
+	 */
+	public GlassPaneAnimation(Image[] images, long delayMs){
+		if(images == null || images.length < 1 || delayMs == 0) throw new IllegalArgumentException("Invalid image or delay!");
 		this.images = images;
-		this.msBetweenImages = msBetweenImages;
+		this.msBetweenImages = delayMs;
 	}
 	
+	/**
+	 * Returns the delay which needs to be applied after every image
+	 * @return
+	 */
 	public long getDelay(){
 		return msBetweenImages;
 	}
 	
+	/**
+	 * Returns the array of animation frames
+	 * @return
+	 */
 	public Image[] getImages(){
 		return images;
 	}
