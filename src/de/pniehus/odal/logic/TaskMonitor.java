@@ -1,4 +1,4 @@
-package de.pniehus.odal.tools;
+package de.pniehus.odal.logic;
 
 /**
  * This interface can be used to wirte monitrs for tasks

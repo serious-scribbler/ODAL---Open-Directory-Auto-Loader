@@ -1,4 +1,4 @@
-package de.pniehus.odal.tools;
+package de.pniehus.odal.logic;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -11,7 +11,7 @@ import javax.swing.tree.TreeNode;
 public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;
-	private String path;
+	public String path; // TODO set private again
 	/**
 	 * Creates a RemoteFile as a single file with the given name and info
 	 * @param name The name of the File
@@ -86,6 +86,7 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * @return
 	 */
 	public static int countFiles(TreeNode root){
+		// TODO check if directory get counted
 		if(((RemoteFile) root).isLeaf()) return 1;
 		int count = 0;
 		int children = root.getChildCount();

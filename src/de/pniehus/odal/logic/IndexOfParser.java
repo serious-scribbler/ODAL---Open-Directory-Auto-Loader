@@ -1,4 +1,4 @@
-package de.pniehus.odal.tools;
+package de.pniehus.odal.logic;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

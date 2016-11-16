@@ -1,4 +1,4 @@
-package de.pniehus.odal.tools;
+package de.pniehus.odal.logic;
 
 /**
  * Holds information about a remote file
@@ -6,7 +6,7 @@ package de.pniehus.odal.tools;
  *
  */
 public class RemoteFileInfo {
-	
+	// TODO ADD file type
 	private final String url;
 	private final long size;
 	

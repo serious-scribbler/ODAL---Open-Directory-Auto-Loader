@@ -5,4 +5,4 @@
  * @author Phil Niehus
  *
  */
-package de.pniehus.odal.tools;
+package de.pniehus.odal.logic;
