@@ -63,6 +63,14 @@ public class AnimatedGlassPane extends JPanel{
 	}
 	
 	/**
+	 * Returns true if the animation is running
+	 * @return
+	 */
+	public boolean isRunning(){
+		return run;
+	}
+	
+	/**
 	 * Draws the panel with opacity
 	 */
 	@Override
