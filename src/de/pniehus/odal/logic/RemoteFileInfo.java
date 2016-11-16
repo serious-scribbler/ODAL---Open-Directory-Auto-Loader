@@ -6,7 +6,6 @@ package de.pniehus.odal.logic;
  *
  */
 public class RemoteFileInfo {
-	// TODO ADD file type
 	private final String url;
 	private final long size;
 	

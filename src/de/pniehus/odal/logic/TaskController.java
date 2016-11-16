@@ -137,8 +137,7 @@ public class TaskController {
 
 			@Override
 			public void run() {
-				while (t.isRunning)
-					;
+				while (t.isRunning);
 				timeElapsed += System.currentTimeMillis() - started;
 			}
 		}).start();
@@ -161,10 +160,20 @@ public class TaskController {
 		}
 		// backup task
 	}
-
+	
+	/**
+	 * This method is used to receive error messages from tasks
+	 * @param message
+	 */
+	public void errorDetected(String message){
+		for(TaskMonitor monitor : monitors){
+			monitor.errorOccured(message);
+		}
+	}
+	
 	/**
 	 * Adds a task monitor to the list of monitors, which will receive updates,
-	 * everytime a file has been downloaded
+	 * everytime a file has been successfully downloaded or an error occurred
 	 * 
 	 * @param m
 	 */

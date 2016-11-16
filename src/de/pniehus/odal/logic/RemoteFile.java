@@ -86,7 +86,6 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * @return
 	 */
 	public static int countFiles(TreeNode root){
-		// TODO check if directory get counted
 		if(((RemoteFile) root).isLeaf() && !((RemoteFile)root).isRoot()) return 1;
 		int count = 0;
 		int children = root.getChildCount();

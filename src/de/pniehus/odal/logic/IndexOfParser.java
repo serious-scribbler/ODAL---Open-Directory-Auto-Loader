@@ -22,6 +22,8 @@ public class IndexOfParser {
 	private List<String> dirs = new ArrayList<String>();
 	public boolean enableSizeFetch = false;
 	
+	// TODO add error listener support
+	
 	/**
 	 * Size fetching allows to see the total file size before the download is finnished
 	 * This is really time consuming (average 150-175ms) and therefore only recommended for directories

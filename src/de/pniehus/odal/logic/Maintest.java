@@ -15,6 +15,7 @@ public class Maintest {
 		IndexOfParser parse = new IndexOfParser(true);
 		long t = System.currentTimeMillis();
 		RemoteFile root = parse.parseURL("http://www.qsl.net/y/yo4tnv//docs/", true, "root");
+		
 		System.out.println(System.currentTimeMillis() - t);
 		final TaskController k = new TaskController("test", false, root, new File("D:/load"));
 		k.addMonitor(new TaskMonitor() {
@@ -23,7 +24,13 @@ public class Maintest {
 			public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
 					System.out.println("Progress: " + (k.getTotalSize() - sizeLeft) * 100 / k.getTotalSize() + "%");			
 			}
+
+			@Override
+			public void errorOccured(String errorMessage) {
+				System.out.println(errorMessage);				
+			}
 		});
+		
 		System.out.println("Files: " + k.getNumberOfFiles() + " Size: " + k.getTotalSize());
 		
 		

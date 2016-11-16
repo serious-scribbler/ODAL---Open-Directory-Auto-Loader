@@ -8,9 +8,6 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
-
 /**
  * A task executes the download of a RemoteFile
  * @author Phil Niehus
@@ -69,9 +66,9 @@ public class Task implements Runnable{
 				fos.close();
 				rbc.close();
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				// THIS CAN NOT HAPPEN
 			} catch (IOException e) {
-				e.printStackTrace();
+				ctrl.errorDetected("Unable to download: '" + file.getFileInfo().getURL() + "':\n" + e.getMessage() + "\nThe file has been removed!");
 			} finally{
 				ctrl.fileFinnished(file.getFileInfo().getSize());
 				file.removeFromParent();
