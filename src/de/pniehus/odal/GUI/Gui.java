@@ -232,23 +232,22 @@ public class Gui extends JFrame{
 		gl_SimultaneousTasksPanel.setHorizontalGroup(
 			gl_SimultaneousTasksPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_SimultaneousTasksPanel.createSequentialGroup()
-					.addContainerGap(61, Short.MAX_VALUE)
-					.addGroup(gl_SimultaneousTasksPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_SimultaneousTasksPanel.createSequentialGroup()
-							.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(122))
-						.addGroup(Alignment.TRAILING, gl_SimultaneousTasksPanel.createSequentialGroup()
-							.addComponent(simultaneousLabel)
-							.addGap(57))))
+					.addContainerGap(59, Short.MAX_VALUE)
+					.addComponent(simultaneousLabel)
+					.addGap(57))
+				.addGroup(gl_SimultaneousTasksPanel.createSequentialGroup()
+					.addGap(108)
+					.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(111, Short.MAX_VALUE))
 		);
 		gl_SimultaneousTasksPanel.setVerticalGroup(
 			gl_SimultaneousTasksPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_SimultaneousTasksPanel.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(simultaneousLabel)
-					.addGap(15)
-					.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(38, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(spinner, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+					.addGap(20))
 		);
 		SimultaneousTasksPanel.setLayout(gl_SimultaneousTasksPanel);
 		TopBar.setLayout(gl_TopBar);
