@@ -7,25 +7,29 @@ import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
 
 /**
- * Scales up all containers based on a grid of squares
+ * Scales up all components based on a grid of squares
  * 
- * This layout is not recommended for positioning actual containers this layout
- * was designed to be used to lay out containers The original size of the
- * container will be used as minimum size The container will then be divided
- * into squares of the given size. Any excess space is used as inset
  * 
- * The ratio between the the horizopntal and vertical side of the
- * area will the content is drawn will be kept, unused space will be used as inset
  * 
  * The alignment determines where the component is placed, if the dimensions are
  * smaller than a full grid. For example a width of 1.3 combined with a left
- * alignment would result in the component being drawn to the left of the 1st of
- * 2 full grid cells While it is possible to use decimals for the dimension of
- * components, this layout will only allow integers to set the position. Gaps
- * can be created by making components Smaller than a full grid. Minimum and
- * preferred size are ignored, maximum size will increase the gap size if it
- * would be exceeded
+ * alignment and a gapRatio of 0.1 would result in the component being drawn 0.07*gridSize from the 
+ * left boarder of the 1st of 2 grids.
+ * Positions will be set in grid coordinates, the position in the grid is determined by
+ * the alignment (like in the last example). A component smaller than a full grid cell
+ * will be placed in the cell according to its alignment. 
  * 
+ * The container which is layed out using this LayoutManager will keep its size calculated or set at
+ * the initialization of this LayoutManager as its minimum size.
+ * 
+ *  The prefferedSize and minimum size of child components will be ignored, the components can't
+ *  get any smaller than in the initial layout. The preferred size is ignored, because the ratio of
+ *  the components height and width will stay unchanged with this layout.
+ *  
+ *  The maximum size will be ignored, if it has a different width/height ratio than the calculated size.
+ *  If it is not ignored, the maximum size will increase the components insets in the grid, but the relative position
+ *  of its center will stay unchanged.
+ *   
  * @author Phil Niehus
  *
  */
