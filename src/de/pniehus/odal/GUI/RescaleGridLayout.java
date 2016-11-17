@@ -46,7 +46,7 @@ public class RescaleGridLayout implements LayoutManager2 {
 	private final Dimension minimalSize;
 	private final GapAlignment horizontalAlignment;
 	private final GapAlignment verticalAlignment;
-	
+	private Map<Component, RescaleGridConstraints> components;
 	/**
 	 * Creates a RescaleGridLayout that fits into the given dimensions in pixles.
 	 * The GapAlignments determine how the drawingArea aligns in the insets. More Info: {@link GapAlignment}
@@ -192,5 +192,83 @@ public class RescaleGridLayout implements LayoutManager2 {
 		return null;
 	}
 	
-	
+	/**
+	 * This object stores how a component wants to be positioned
+	 * @author Phil
+	 *
+	 */
+	public class RescaleGridConstraints{
+		
+		/**
+		 * The vertical alignment of the associated component
+		 */
+		public final GapAlignment verticalAlignment;
+		
+		/**
+		 * The horizontal alignment of the associated component
+		 */
+		public final GapAlignment horizontalAlignment;
+		
+		/**
+		 * The horizontal position of the associated component in the grid
+		 */
+		public final int xPos;
+		
+		/**
+		 * The vertical position of the associated component in the grid
+		 */
+		public final int yPos;
+		
+		/**
+		 * The height of the associated component
+		 */
+		public final double height;
+		
+		/**
+		 * The width of the associated component
+		 */
+		public final double width;
+		
+		
+		/**
+		 * Creates a RescaleGridConstraint with center alignment and the given position and size
+		 * @param xPos The horizontal grid cells coordinate, coordinates need to be >= 1
+		 * @param yPos The vertical grid cells coordinate, coordinates need to be >= 1
+		 * @param width The width of the object in grids, the width needs to b >= 0, more info {@link RescaleGridLayout}
+		 * @param height The width of the object in grids, the width needs to b >= 0, more info {@link RescaleGridLayout}
+		 */
+		public RescaleGridConstraints(int xPos, int yPos, double width, double height){
+			if((xPos < 1) || (yPos < 1)) throw new IllegalArgumentException("Positions must be >= 1!");
+			if((width <= 0) || (height <= 0)) throw new IllegalArgumentException("Width and height must be bigger than 0");
+			this.verticalAlignment = new GapAlignment(GapAlignment.VERTICAL_ALIGNMENT, GapAlignment.ALIGN_TO_CENTER, 0);
+			this.horizontalAlignment = new GapAlignment(GapAlignment.HORIZONTAL_ALIGNMENT, GapAlignment.ALIGN_TO_CENTER, 0);
+			this.yPos = yPos;
+			this.xPos = xPos;
+			this.height = height;
+			this.width = width;
+		}
+		
+		/**
+		 * Creates a RescaleGridConstraint with the given alignment, position and size
+		 * How to place components: more info {@link RescaleGridLayout}
+		 * @param xPos The horizontal grid cells coordinate, coordinates need to be >= 1
+		 * @param yPos The vertical grid cells coordinate, coordinates need to be >= 1
+		 * @param width The width of the object in grids, the width needs to b >= 0 
+		 * @param height The width of the object in grids, the width needs to b >= 0
+		 * @param horizontalAlignment The horizontal alignment of the component in its grid cells
+		 * @param verticalAlignment The vertical alignment of the component in its grid cells
+		 */
+		public RescaleGridConstraints(int xPos, int yPos, double width, double height, GapAlignment horizontalAlignment, GapAlignment verticalAlignment){
+			if((xPos < 1) || (yPos < 1)) throw new IllegalArgumentException("Positions must be >= 1!");
+			if((width <= 0) || (height <= 0)) throw new IllegalArgumentException("Width and height must be bigger than 0");
+			GapAlignment.evaluateAlignments(horizontalAlignment, verticalAlignment);
+			this.verticalAlignment = verticalAlignment;
+			this.horizontalAlignment = horizontalAlignment;
+			this.yPos = yPos;
+			this.xPos = xPos;
+			this.height = height;
+			this.width = width;
+		}
+		
+	}
 }
