@@ -47,12 +47,12 @@ public class Maintest {
 		lockable.unlock();
 //		anim.stop();
 		
-		final TaskController k = new TaskController("test", true, root, new File("D:/load/hackingInfo"));
+		final TaskController k = new TaskController("test", true, root, new File("D:/load/"));
 		k.addMonitor(new TaskMonitor() {
 			
 			@Override
 			public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
-					System.out.println("Files left: " + filesLeft + " Progress: " + (k.getTotalSize() - sizeLeft) * 100 / k.getTotalSize() + "%");			
+					System.out.println("Files left: " + filesLeft);			
 			}
 
 			@Override
