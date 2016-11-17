@@ -21,7 +21,7 @@ import de.pniehus.odal.utils.DeepCopy;
 public class Maintest {
 	public static void main(String[] args) throws Exception {
 		
-		IndexOfParser parse = new IndexOfParser(false);
+		/*IndexOfParser parse = new IndexOfParser(false);
 		JFrame test = new JFrame("Running");
 		test.setSize(new Dimension(1280, 720));
 		LockableAnimatedPanel lockable = new LockableAnimatedPanel(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
@@ -70,6 +70,35 @@ public class Maintest {
 		if(s.next().equals("yes")) k.start();
 		test.setVisible(false);
 		test.dispose();
+		*/
+		
+		Scanner s = new Scanner(System.in);
+		System.out.println("Enter your url:");
+		IndexOfParser parse = new IndexOfParser(false);
+		String url = s.next();
+		System.out.println("Parsing url...");
+		RemoteFile root = parse.parseURL(url, true, "root");
+		System.out.println(root);
+		Thread.sleep(800);
+		System.out.println("Enter the path to the output directory");
+		String path = s.next();
+		TaskController k = new TaskController("test", true, root, new File(path));
+		k.addMonitor(new TaskMonitor() {
+			
+			@Override
+			public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
+					System.out.println("Files left: " + filesLeft);			
+			}
+
+			@Override
+			public void errorOccured(String errorMessage) {
+				System.out.println(errorMessage);				
+			}
+		});
+		System.out.println("Found " + k.getNumberOfFiles() + " files, download (yes/no)?");
+		if(s.next().equals("yes")){
+			k.start();
+		}
 		
 	}
 }
