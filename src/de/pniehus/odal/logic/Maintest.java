@@ -20,6 +20,7 @@ import de.pniehus.odal.utils.DeepCopy;
 
 public class Maintest {
 	public static void main(String[] args) throws Exception {
+		
 		IndexOfParser parse = new IndexOfParser(false);
 		JFrame test = new JFrame("Running");
 		test.setSize(new Dimension(1280, 720));
@@ -69,5 +70,6 @@ public class Maintest {
 		if(s.next().equals("yes")) k.start();
 		test.setVisible(false);
 		test.dispose();
+		
 	}
 }
