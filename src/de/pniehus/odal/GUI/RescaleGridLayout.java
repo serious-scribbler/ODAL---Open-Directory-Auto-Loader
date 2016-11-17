@@ -5,6 +5,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
+import java.util.HashMap;
+
+import com.sun.javafx.collections.MappingChange.Map;
 
 /**
  * Scales up all components based on a grid of squares
@@ -46,7 +49,8 @@ public class RescaleGridLayout implements LayoutManager2 {
 	private final Dimension minimalSize;
 	private final GapAlignment horizontalAlignment;
 	private final GapAlignment verticalAlignment;
-	private Map<Component, RescaleGridConstraints> components;
+	private java.util.Map<Component, RescaleGridConstraints> components;
+	
 	/**
 	 * Creates a RescaleGridLayout that fits into the given dimensions in pixles.
 	 * The GapAlignments determine how the drawingArea aligns in the insets. More Info: {@link GapAlignment}
@@ -68,7 +72,8 @@ public class RescaleGridLayout implements LayoutManager2 {
 		
 		this.cellsX = ((int) dimension.getWidth()) / cellSize;
 		this.cellsY = ((int) dimension.getHeight()) / cellSize;
-			
+		
+		components = new HashMap<Component, RescaleGridConstraints>();
 	}
 
 	/**
@@ -95,7 +100,7 @@ public class RescaleGridLayout implements LayoutManager2 {
 		this.horizontalAlignment = horizontalAlignment;
 		
 		this.minimalSize = new Dimension(x, y);
-		
+		components = new HashMap<Component, RescaleGridConstraints>();
 	}
 	
 	// TODO write a constructor that fits a grid with a set number of cells in an area of given size;
@@ -114,7 +119,8 @@ public class RescaleGridLayout implements LayoutManager2 {
 		
 		this.cellsX = cellsX;
 		this.cellsY = cellsY;
-		this.cellSize = (xSize < ySize) ? xSize : ySize; // TODO re use
+		this.cellSize = (xSize < ySize) ? xSize : ySize; // TODO re use formula
+		components = new HashMap<Component, RescaleGridConstraints>();
 	}
 	
 	/**
