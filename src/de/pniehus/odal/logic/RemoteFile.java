@@ -121,7 +121,7 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * @param depth the depth of the tree
 	 * @return
 	 */
-	private String getStringRepresentation(TreeNode root, int depth){
+	private String getStringRepresentation(TreeNode root, int depth){ // TODO fix depth issue
 		String rep = "";
 		if(depth == 0) rep += "+" + ((RemoteFile)root).getName() + "\n";
 		depth++;

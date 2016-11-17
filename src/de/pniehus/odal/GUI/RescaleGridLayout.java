@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.sun.javafx.collections.MappingChange.Map;
 
@@ -155,8 +156,36 @@ public class RescaleGridLayout implements LayoutManager2 {
 		int verticalInsets = realParentDimension.height - drawingAreaHeight;
 		int horizontalInsets = realParentDimension.width - drawingAreaWidth;
 		
-		int insetTop = parentInsets.top + (verticalInsets/2); // TODO Mit gap ration arbeiten -> Formel gilt aber bei center alignment!
+		int insetTop = parentInsets.top; // TODO Mit gap ration arbeiten -> Formel gilt aber bei center alignment!
 		int insetLeft = parentInsets.left + (horizontalInsets/2); // TODO mit gapratio arbeiten
+		
+		switch(verticalAlignment.getAlignment()){
+			
+			case GapAlignment.ALIGN_TO_TOP:
+				insetTop += (int) (((double) verticalInsets) * verticalAlignment.getGapRatio());
+				break;
+			
+			case GapAlignment.ALIGN_TO_CENTER:
+				insetTop += (verticalInsets/2);
+				break;
+			
+			default:
+				insetTop += verticalInsets - ((int) (((double) verticalInsets) * verticalAlignment.getGapRatio()));
+		}
+		
+		switch(horizontalAlignment.getAlignment()){
+		
+		case GapAlignment.ALIGN_LEFT:
+			insetLeft += (int) (((double) horizontalInsets) * horizontalAlignment.getGapRatio());
+			break;
+		
+		case GapAlignment.ALIGN_TO_CENTER:
+			insetLeft += (horizontalInsets/2);
+			break;
+		
+		default:
+			insetLeft += horizontalInsets - ((int) (((double) horizontalInsets) * horizontalAlignment.getGapRatio()));
+	}
 		
 		/* position des grids y: insetTop + posY * cellSize
 		 	x: insetLeft + posX * cellSize
@@ -165,6 +194,16 @@ public class RescaleGridLayout implements LayoutManager2 {
 		
 		*/
 		
+		Iterator iterate = components.entrySet().iterator();
+		while(iterate.hasNext()){
+			java.util.Map.Entry<Component, RescaleGridConstraints> entry = (java.util.Map.Entry<Component, RescaleGridConstraints>) iterate.next();
+			Component c = entry.getKey();
+			RescaleGridConstraints constraint = entry.getValue();
+			int xMargin = insetLeft + (constraint.xPos * cellSize);
+			int yMargin = insetTop + (constraint.yPos * cellSize);
+			// TODO calculate actual position
+			
+		}
 	}
 	
 	/**
@@ -190,7 +229,7 @@ public class RescaleGridLayout implements LayoutManager2 {
 	private int getCellSize(Dimension parentDimension){
 		int xSize = parentDimension.width/cellsX;
 		int ySize = parentDimension.height/cellsY;
-		
+		// TODO if the size fits exactly, remove 1 grid size and recalculate before returning the cell size
 		return (xSize < ySize) ? xSize : ySize;
 	}
 	

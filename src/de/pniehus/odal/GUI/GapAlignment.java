@@ -79,7 +79,7 @@ public class GapAlignment{
 	 * Returns the alignment
 	 * @return
 	 */
-	public int getAlignMent(){
+	public int getAlignment(){
 		return alignTo;
 	}
 	
