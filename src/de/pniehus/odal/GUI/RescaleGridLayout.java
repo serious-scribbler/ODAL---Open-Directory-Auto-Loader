@@ -156,9 +156,14 @@ public class RescaleGridLayout implements LayoutManager2 {
 		int verticalInsets = realParentDimension.height - drawingAreaHeight;
 		int horizontalInsets = realParentDimension.width - drawingAreaWidth;
 		
-		int insetTop = parentInsets.top; // TODO Mit gap ration arbeiten -> Formel gilt aber bei center alignment!
-		int insetLeft = parentInsets.left + (horizontalInsets/2); // TODO mit gapratio arbeiten
+		int insetTop = parentInsets.top;
+		int insetLeft = parentInsets.left;
 		
+		/* TODO REMOVE GapAlignment:
+		 * Replace with a double: 	0.5 -> center
+		 * 							> 0 < 0.5 -> left/top
+		 * 							> 0.5 -> right/bottom
+		 */
 		switch(verticalAlignment.getAlignment()){
 			
 			case GapAlignment.ALIGN_TO_TOP:
@@ -199,8 +204,19 @@ public class RescaleGridLayout implements LayoutManager2 {
 			java.util.Map.Entry<Component, RescaleGridConstraints> entry = (java.util.Map.Entry<Component, RescaleGridConstraints>) iterate.next();
 			Component c = entry.getKey();
 			RescaleGridConstraints constraint = entry.getValue();
+			
 			int xMargin = insetLeft + (constraint.xPos * cellSize);
 			int yMargin = insetTop + (constraint.yPos * cellSize);
+			int height = (int) constraint.height * cellSize;
+			int width = (int) constraint.width * cellSize;
+			
+			if(width % cellSize != 0){
+				// calculate insets (auf x margin addieren)
+			}
+			
+			if(height % cellSize != 0){
+				// calculate insets (auf y margin addieren)
+			}
 			// TODO calculate actual position
 			
 		}
@@ -229,7 +245,7 @@ public class RescaleGridLayout implements LayoutManager2 {
 	private int getCellSize(Dimension parentDimension){
 		int xSize = parentDimension.width/cellsX;
 		int ySize = parentDimension.height/cellsY;
-		// TODO if the size fits exactly, remove 1 grid size and recalculate before returning the cell size
+		// TODO if the size fits exactly, remove 1 grid size and recalculate before returning the cell size -> modulo
 		return (xSize < ySize) ? xSize : ySize;
 	}
 	
