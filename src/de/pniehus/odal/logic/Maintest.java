@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 
 import de.pniehus.odal.GUI.AnimatedGlassPane;
 import de.pniehus.odal.GUI.GlassPaneAnimation;
-import de.pniehus.odal.GUI.Gui;
 import de.pniehus.odal.GUI.LockableAnimatedPanel;
 import de.pniehus.odal.utils.DeepCopy;
 
@@ -42,18 +41,18 @@ public class Maintest {
 		long t = System.currentTimeMillis();
 		lockable.lock();
 //		anim.start();
-		RemoteFile root = parse.parseURL("http://www.qsl.net/y/yo4tnv//docs/", true, "root");
+		RemoteFile root = parse.parseURL("http://entropy.soldierx.com/~kayin/archive/", true, "root");
 		
 		System.out.println(System.currentTimeMillis() - t);
 		lockable.unlock();
 //		anim.stop();
 		
-		final TaskController k = new TaskController("test", true, root, new File("D:/load"));
+		final TaskController k = new TaskController("test", true, root, new File("D:/load/hackingInfo"));
 		k.addMonitor(new TaskMonitor() {
 			
 			@Override
 			public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
-					System.out.println("Progress: " + (k.getTotalSize() - sizeLeft) * 100 / k.getTotalSize() + "%");			
+					System.out.println("Files left: " + filesLeft + " Progress: " + (k.getTotalSize() - sizeLeft) * 100 / k.getTotalSize() + "%");			
 			}
 
 			@Override
