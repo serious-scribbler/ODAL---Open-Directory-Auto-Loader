@@ -63,18 +63,19 @@ public class RescaleGridLayout implements LayoutManager2 {
 		this.cellSize = cellSize;
 		this.minimalSize = dimension;
 		
-		// TODO calculate cell count
-		
+		this.cellsX = ((int) dimension.getWidth()) / cellSize;
+		this.cellsY = ((int) dimension.getHeight()) / cellSize;
+			
 	}
 
 	/**
-	 * Creates a new RescaleGrid with the given vertical and horizontal alignment (gapRatio * cellSize = inset) of the drawing area,
+	 * Creates a new RescaleGrid with the given vertical and horizontal alignment of the drawing area,
 	 * number of cells and cellSize. Take a look at {@link GapAlignment} for more information.
 	 * @param cellsX The number of horizontal cells
 	 * @param cellsY The number of vertical cells
 	 * @param cellSize The size of a cell in pixels (squared cells)
-	 * @param horizontalAlignment The horizontal alignment of the drawing Area in the excess space (uses gapRatio * cellSize as excess)
-	 * @param verticalAlignment the vertical alignment of the drawing Area in the excess space (uses gapRatio * cellSize as excess)
+	 * @param horizontalAlignment The horizontal alignment of the drawing Area in the excess space (uses cellSize as excess)
+	 * @param verticalAlignment the vertical alignment of the drawing Area in the excess space (uses cellSize as excess)
 	 */
 	public RescaleGridLayout(int cellsX, int cellsY, int cellSize, GapAlignment horizontalAlignment, GapAlignment verticalAlignment) {
 		if((cellsX <= 0) || (cellsY <= 0)) throw new IllegalArgumentException("Invalid cell count!");
@@ -84,9 +85,19 @@ public class RescaleGridLayout implements LayoutManager2 {
 		this.cellsX = cellsX;
 		this.cellsY = cellsY;
 		this.cellSize = cellSize;
-		// TODO calculate minimum size
+		
+		int x = (cellsX + 1) * cellSize;
+		int y = (cellsY + 1) * cellSize;
+		
+		this.verticalAlignment = verticalAlignment;
+		this.horizontalAlignment = horizontalAlignment;
+		
+		this.minimalSize = new Dimension(x, y);
+		
 	}
-
+	
+	// TODO write a constructor that fits a grid with a set number of cells in an area of given size;
+	
 	/**
 	 * Unused by this LayoutManager
 	 */
@@ -103,11 +114,15 @@ public class RescaleGridLayout implements LayoutManager2 {
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	/**
+	 * Returns the minimal size the container which is layed out by this layout manager requires
+	 * @param parent
+	 * @return
+	 */
 	@Override
 	public Dimension minimumLayoutSize(Container parent) {
-		// TODO Auto-generated method stub
-		return null;
+		return minimalSize;
 	}
 
 	@Override
