@@ -39,48 +39,52 @@ public class RescaleGridLayout implements LayoutManager2 {
 	private final int cellSize; // sell size in px
 	private final int cellsX; // number of horizontal cells
 	private final int cellsY; // number of vertical cells
-	private final RescaleGridInset insets; // Stores the insets in grid units
-											// (double)
-
+	private final Dimension minimalSize;
+	private final GapAlignment horizontalAlignment;
+	private final GapAlignment verticalAlignment;
+	
 	/**
-	 * Will divide the area with the given size into a grid, excess space will
-	 * be used as inset Minimal insets will be subtracted from the size for
-	 * gridsize calculation. vertical and horizontal gap will be as close to
-	 * equal (at corresponding sites) as possible
-	 * 
-	 * @param width
-	 *            The initial container width in pixels
-	 * @param height
-	 *            The initial container height in pixels
-	 * @param cellSize
-	 *            the cellSize in pixels
-	 * @param minVerticalInset
-	 *            The minimal inset size in pixels for the top and bottom insets
-	 * @param minHorizontalInset
-	 *            The minimal inset size in pixels for the left and right side
+	 * Creates a RescaleGridLayout that fits into the given dimensions in pixles.
+	 * The GapAlignments determine how the drawingArea aligns in the insets. More Info: {@link GapAlignment}
+	 * @param dimensions The minimum dimensions of the final component (x = index 0, y = index 1)
+	 * @param cellSize The size of the grid cells in pixels
+	 * @param horizontalAlignment The horizontal alignment of the drawing area in the excess space
+	 * @param verticalAlignment The horizontal alignment of the drawing area in the excess space
 	 */
-	public RescaleGridLayout(int width, int height, int cellSize, int minVerticalInset, int minHorizontalInset) {
+	public RescaleGridLayout(Dimension dimension, int cellSize, GapAlignment horizontalAlignment, GapAlignment verticalAlignment) {
+		if(cellSize < 1) throw new IllegalArgumentException("Invalid cellSize! Size needs to be higher than 0!");
+		if(dimension == null || dimension.getHeight() < (double) cellSize || dimension.getWidth() < (double) cellSize) throw new IllegalArgumentException("invalid dimensions!");
+		if(horizontalAlignment == null || horizontalAlignment.getAlignmentType() != GapAlignment.HORIZONTAL_ALIGNMENT) throw new IllegalArgumentException("Invalid horizontal alignment!");
+		if(verticalAlignment == null || verticalAlignment.getAlignmentType() != GapAlignment.VERTICAL_ALIGNMENT) throw new IllegalArgumentException("Invalid horizontal alignment!");
+		
+		this.horizontalAlignment = horizontalAlignment;
+		this.verticalAlignment = verticalAlignment;
+		
 		this.cellSize = cellSize;
-		cellsX = (width - (2 * minHorizontalInset))/cellSize;
-		cellsY = (height - (2 * minVerticalInset))/cellSize;
-		int excessY = (height - (2 * minVerticalInset)) - (cellSize * cellsY);
-		int excessX = (width - (2 * minHorizontalInset)) - (cellSize * cellsX);
-		// TODO change to maximum insets
+		this.minimalSize = dimension;
+		
+		// TODO calculate cell count
 		
 	}
 
 	/**
-	 * Devides the container of cellsX*cellsY squared cells with a size of
-	 * cellSize*cellSize Adds insets of the given size the container
-	 * 
-	 * @param cellsX
-	 * @param cellsY
-	 * @param cellSize
-	 * @param insets
-	 *            Specifies the in
+	 * Creates a new RescaleGrid with the given vertical and horizontal alignment (gapRatio * cellSize = inset) of the drawing area,
+	 * number of cells and cellSize. Take a look at {@link GapAlignment} for more information.
+	 * @param cellsX The number of horizontal cells
+	 * @param cellsY The number of vertical cells
+	 * @param cellSize The size of a cell in pixels (squared cells)
+	 * @param horizontalAlignment The horizontal alignment of the drawing Area in the excess space (uses gapRatio * cellSize as excess)
+	 * @param verticalAlignment the vertical alignment of the drawing Area in the excess space (uses gapRatio * cellSize as excess)
 	 */
-	public RescaleGridLayout(int cellsX, int cellsY, int cellSize, RescaleGridInset insets) {
-		// TODO implement
+	public RescaleGridLayout(int cellsX, int cellsY, int cellSize, GapAlignment horizontalAlignment, GapAlignment verticalAlignment) {
+		if((cellsX <= 0) || (cellsY <= 0)) throw new IllegalArgumentException("Invalid cell count!");
+		if(cellSize <= 0) throw new IllegalArgumentException("Invalid cellSize! Size must be bigger than 0!");
+		if(horizontalAlignment == null || horizontalAlignment.getAlignmentType() != GapAlignment.HORIZONTAL_ALIGNMENT) throw new IllegalArgumentException("Invalid horizontal alignment!");
+		if(verticalAlignment == null || verticalAlignment.getAlignmentType() != GapAlignment.VERTICAL_ALIGNMENT) throw new IllegalArgumentException("Invalid horizontal alignment!");
+		this.cellsX = cellsX;
+		this.cellsY = cellsY;
+		this.cellSize = cellSize;
+		// TODO calculate minimum size
 	}
 
 	/**
@@ -92,7 +96,7 @@ public class RescaleGridLayout implements LayoutManager2 {
 	}
 
 	/**
-	 * Lays out the container according to the base layout
+	 * Lays out the container according to the grid position, size in grid units and alignment
 	 */
 	@Override
 	public void layoutContainer(Container parent) {
@@ -153,77 +157,106 @@ public class RescaleGridLayout implements LayoutManager2 {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public class RescaleGridInset {
-		private int pixelsTop;
-		private int pixelsBottom;
-		private int pixelsLeft;
-		private int pixelsRight;
-		
-		private double gridUnitsTop;
-		private double gridUnitsBottom;
-		private double gridUnitsLeft;
-		private double gridUnitsRight;
-		
-		public int getPixelsTop() {
-			return pixelsTop;
-		}
-
-		public int getPixelsBottom() {
-			return pixelsBottom;
-		}
-
-		public int getPixelsLeft() {
-			return pixelsLeft;
-		}
-
-		public int getPixelsRight() {
-			return pixelsRight;
-		}
-
-		public double getGridUnitsTop() {
-			return gridUnitsTop;
-		}
-
-		public double getGridUnitsBottom() {
-			return gridUnitsBottom;
-		}
-
-		public double getGridUnitsLeft() {
-			return gridUnitsLeft;
-		}
-
-		public double getGridUnitsRight() {
-			return gridUnitsRight;
-		}
-
-		/**
-		 * Creates insets with pixels as base size, those will be scaled
-		 * Insets can be larger to keep the ratio between sides, the ratio between insets will stay the same
-		 * @param top
-		 * @param left
-		 * @param bottom
-		 * @param right
-		 */
-		public RescaleGridInset(int top, int left, int bottom, int right){
-			this.pixelsTop = top;
-			this.pixelsLeft = left;
-			this.pixelsBottom = bottom;
-			this.pixelsRight = right;
-		}
+	
+	/**
+	 * This object is used to store alignment and inset information for the {@link RescaleGridLayout}
+	 * @author Phil Niehus
+	 *
+	 */
+	public class GapAlignment{
 		
 		/**
-		 * Insets will be kept in the given ratio. minimal insets will be the given values*gridSize
-		 * @param top
-		 * @param left
-		 * @param right
-		 * @param bottom
+		 * Describes the type of the {@see GapAlignment} as vertical
 		 */
-		public RescaleGridInset(double top, double left, double right, double bottom){
-			this.gridUnitsBottom = bottom;
-			this.gridUnitsLeft = left;
-			this.gridUnitsRight = right;
-			this.gridUnitsTop = top;
+		public static final boolean VERTICAL_ALIGNMENT = false;
+		
+		/**
+		 * Describes the type of the {@see GapAlignment} as horizontal
+		 */
+		public static final boolean HORIZONTAL_ALIGNMENT = true;
+		
+		/**
+		 * Center alignment, can be used for vertical and horizontal alignment
+		 */
+		public static final int ALIGN_TO_CENTER = 0;
+		
+		/**
+		 * Top alignment, can only be used for vertical alignment
+		 */
+		public static final int ALIGN_TO_TOP = 1;
+		
+		/**
+		 * Bottom alignment, can only be used for vertical alignment
+		 */
+		public static final int ALIGN_TO_BOTTOM = 2;
+		
+		/**
+		 * Left alignment, can only be used for horizontal alignment
+		 */
+		public static final int ALIGN_LEFT = -1;
+		
+		/**
+		 * Right alignment, can only be used for horizontal alignment
+		 */
+		public static final int ALIGN_RIGHT = -2;
+		
+		/**
+		 * Determines how big in percent of the access space the gap to the selected side should be
+		 */
+		private double gapRatio;
+		
+		/**
+		 * The alignment type
+		 */
+		private boolean alignmentType;
+		
+		/**
+		 * Holds the orientation
+		 */
+		private int alignTo;
+		
+		/**
+		 * Creates an alignment which is used to align components in a container that uses the {@link RescaleGridLayout}
+		 * This is also used to align elements in grid cells
+		 * @param alignmentType The type of alignment either vertical or horizontal
+		 * @param alignTo The direction the component is aligned to (left/center/right) or (top/center/left)
+		 * @param gapRatio The gapRatio determines how much of the excess space is used as an inset on the side
+		 * specified in alignTo for example: Grid size is 100, the components height 90, the vertical alignment top and the gapRatio 0.2
+		 * this will lead position the component (10*0.2) = 2 pixels away from the grids top side
+		 */
+		public GapAlignment(boolean alignmentType, int alignTo, double gapRatio){
+			this.alignmentType = alignmentType;
+			if(alignmentType && alignTo > 0) throw new IllegalArgumentException("Invalid alignment (not horizontal): " + alignTo);
+			if((!alignmentType) && alignTo < 0) throw new IllegalArgumentException("Invalid alignment (not vertical): " + alignTo);
+			if(gapRatio >= 0.5 || gapRatio < 0) throw new IllegalArgumentException("Inavlid gapRatio required '0 <= gapRatio < 0.5' found: " + gapRatio);;
+			this.alignTo = alignTo;
+			this.gapRatio = gapRatio;
+		}
+		
+		/**
+		 * Returns the alignment
+		 * @return
+		 */
+		public int getAlignMent(){
+			return alignTo;
+		}
+		
+		/**
+		 * Returns the alignment type
+		 * @return
+		 */
+		public boolean getAlignmentType(){
+			return alignmentType;
+		}
+		
+		/**
+		 * Returns the gapRatio
+		 * The gapRatio determines how much of the left over space is allocated to the inset (similar to a padding in css)
+		 * in the alignment side (left over space * gapRatio = inset)
+		 * @return
+		 */
+		public double getGapRatio(){
+			return gapRatio;
 		}
 	}
 }
