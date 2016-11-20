@@ -49,8 +49,8 @@ public class RescaleGridLayout implements LayoutManager2 {
 	private final int cellsX; // number of horizontal cells
 	private final int cellsY; // number of vertical cells
 	private final Dimension minimalSize;
-	private final GapAlignment horizontalAlignment;
-	private final GapAlignment verticalAlignment;
+	private final float horizontalAlignment;
+	private final float verticalAlignment;
 	private java.util.Map<Component, RescaleGridConstraints> components;
 	
 	/**
@@ -61,10 +61,11 @@ public class RescaleGridLayout implements LayoutManager2 {
 	 * @param horizontalAlignment The horizontal alignment of the drawing area in the excess space
 	 * @param verticalAlignment The horizontal alignment of the drawing area in the excess space
 	 */
-	public RescaleGridLayout(Dimension dimension, int cellSize, GapAlignment horizontalAlignment, GapAlignment verticalAlignment) {
+	public RescaleGridLayout(Dimension dimension, int cellSize, float horizontalAlignment, float verticalAlignment) {
 		if(cellSize < 1) throw new IllegalArgumentException("Invalid cellSize! Size needs to be higher than 0!");
 		if(dimension == null || dimension.getHeight() < (double) cellSize || dimension.getWidth() < (double) cellSize) throw new IllegalArgumentException("invalid dimensions!");
-		GapAlignment.evaluateAlignments(horizontalAlignment, verticalAlignment);
+		RescaleGridLayout.evaluateAlignment(verticalAlignment);
+		RescaleGridLayout.evaluateAlignment(horizontalAlignment);
 		
 		this.horizontalAlignment = horizontalAlignment;
 		this.verticalAlignment = verticalAlignment;
@@ -87,10 +88,12 @@ public class RescaleGridLayout implements LayoutManager2 {
 	 * @param horizontalAlignment The horizontal alignment of the drawing Area in the excess space (uses cellSize as excess)
 	 * @param verticalAlignment the vertical alignment of the drawing Area in the excess space (uses cellSize as excess)
 	 */
-	public RescaleGridLayout(int cellsX, int cellsY, int cellSize, GapAlignment horizontalAlignment, GapAlignment verticalAlignment) {
+	public RescaleGridLayout(int cellsX, int cellsY, int cellSize, float horizontalAlignment, float verticalAlignment) {
 		if((cellsX <= 0) || (cellsY <= 0)) throw new IllegalArgumentException("Invalid cell count!");
 		if(cellSize <= 0) throw new IllegalArgumentException("Invalid cellSize! Size must be bigger than 0!");
-		GapAlignment.evaluateAlignments(horizontalAlignment, verticalAlignment);
+		RescaleGridLayout.evaluateAlignment(verticalAlignment);
+		RescaleGridLayout.evaluateAlignment(horizontalAlignment);
+		
 		this.cellsX = cellsX;
 		this.cellsY = cellsY;
 		this.initialCellSize = cellSize;
@@ -113,11 +116,12 @@ public class RescaleGridLayout implements LayoutManager2 {
 	 * @param horizontalAlignment The horizontal alignment of the drawing Area in the excess space
 	 * @param verticalAlignment the vertical alignment of the drawing Area in the excess space
 	 */
-	public RescaleGridLayout(Dimension dimension, int cellsX, int cellsY, GapAlignment horizontalAlignment, GapAlignment verticalAlignment){
-		GapAlignment.evaluateAlignments(horizontalAlignment, verticalAlignment);
+	public RescaleGridLayout(Dimension dimension, int cellsX, int cellsY, float horizontalAlignment, float verticalAlignment){
 		if((cellsX < 1) || (cellsY < 1)) throw new IllegalArgumentException("Invalid cell size! At least 1 vertical and one horizontal cell required!");
 		if(dimension == null) throw new IllegalArgumentException("Invalid dimension: null");
 		if((cellsX > dimension.width) || (cellsY > dimension.height)) throw new IllegalArgumentException("This number of cells does not fit in the given dimensions!");
+		RescaleGridLayout.evaluateAlignment(verticalAlignment);
+		RescaleGridLayout.evaluateAlignment(horizontalAlignment);
 		
 		this.minimalSize = dimension;
 		this.horizontalAlignment = horizontalAlignment;
@@ -158,43 +162,13 @@ public class RescaleGridLayout implements LayoutManager2 {
 		
 		int insetTop = parentInsets.top;
 		int insetLeft = parentInsets.left;
-		
-		/* TODO REMOVE GapAlignment:
-		 * Replace with a double: 	0.5 -> center
-		 * 							> 0 < 0.5 -> left/top
-		 * 							> 0.5 -> right/bottom
-		 */
-		switch(verticalAlignment.getAlignment()){
-			
-			case GapAlignment.ALIGN_TO_TOP:
-				insetTop += (int) (((double) verticalInsets) * verticalAlignment.getGapRatio());
-				break;
-			
-			case GapAlignment.ALIGN_TO_CENTER:
-				insetTop += (verticalInsets/2);
-				break;
-			
-			default:
-				insetTop += verticalInsets - ((int) (((double) verticalInsets) * verticalAlignment.getGapRatio()));
-		}
-		
-		switch(horizontalAlignment.getAlignment()){
-		
-		case GapAlignment.ALIGN_LEFT:
-			insetLeft += (int) (((double) horizontalInsets) * horizontalAlignment.getGapRatio());
-			break;
-		
-		case GapAlignment.ALIGN_TO_CENTER:
-			insetLeft += (horizontalInsets/2);
-			break;
-		
-		default:
-			insetLeft += horizontalInsets - ((int) (((double) horizontalInsets) * horizontalAlignment.getGapRatio()));
-	}
+				
+		insetTop += Math.round(insetTop * verticalInsets);
+		insetLeft += Math.round(insetLeft * horizontalInsets);
 		
 		/* position des grids y: insetTop + posY * cellSize
 		 	x: insetLeft + posX * cellSize
-		Tatsächliche Position des Objektes berechnen nicht vergessen!
+		Tatsï¿½chliche Position des Objektes berechnen nicht vergessen!
 		
 		
 		*/
@@ -207,8 +181,8 @@ public class RescaleGridLayout implements LayoutManager2 {
 			
 			int xMargin = insetLeft + (constraint.xPos * cellSize);
 			int yMargin = insetTop + (constraint.yPos * cellSize);
-			int height = (int) constraint.height * cellSize;
-			int width = (int) constraint.width * cellSize;
+			int height = Math.round(constraint.height * cellSize);
+			int width = Math.round(constraint.width * cellSize);
 			
 			if(width % cellSize != 0){
 				// calculate insets (auf x margin addieren)
@@ -330,8 +304,16 @@ public class RescaleGridLayout implements LayoutManager2 {
 	}
 	
 	/**
+	 * This method evaluates the alignment values, throws an IllegalArgumentException if the allignment is wrong
+	 * @param alignment
+	 */
+	public static void evaluateAlignment(float alignment){
+		if((alignment > 1f) || (alignment < 0f)) throw new IllegalArgumentException("Invalid alignment!");
+	}
+	
+	/**
 	 * This object stores how a component wants to be positioned
-	 * @author Phil
+	 * @author Phil Niehus
 	 *
 	 */
 	public class RescaleGridConstraints{
@@ -339,12 +321,12 @@ public class RescaleGridLayout implements LayoutManager2 {
 		/**
 		 * The vertical alignment of the associated component
 		 */
-		public final GapAlignment verticalAlignment;
+		public final float verticalAlignment;
 		
 		/**
 		 * The horizontal alignment of the associated component
 		 */
-		public final GapAlignment horizontalAlignment;
+		public final float horizontalAlignment;
 		
 		/**
 		 * The horizontal position of the associated component in the grid
@@ -359,12 +341,12 @@ public class RescaleGridLayout implements LayoutManager2 {
 		/**
 		 * The height of the associated component
 		 */
-		public final double height;
+		public final float height;
 		
 		/**
 		 * The width of the associated component
 		 */
-		public final double width;
+		public final float width;
 		
 		
 		/**
@@ -374,11 +356,11 @@ public class RescaleGridLayout implements LayoutManager2 {
 		 * @param width The width of the object in grids, the width needs to b > 0, more info {@link RescaleGridLayout}
 		 * @param height The width of the object in grids, the width needs to b > 0, more info {@link RescaleGridLayout}
 		 */
-		public RescaleGridConstraints(int xPos, int yPos, double width, double height){
+		public RescaleGridConstraints(int xPos, int yPos, float width, float height){
 			if((xPos < 0) || (yPos < 0)) throw new IllegalArgumentException("Positions must be >= 1!");
 			if((width <= 0) || (height <= 0)) throw new IllegalArgumentException("Width and height must be bigger than 0");
-			this.verticalAlignment = new GapAlignment(GapAlignment.VERTICAL_ALIGNMENT, GapAlignment.ALIGN_TO_CENTER, 0);
-			this.horizontalAlignment = new GapAlignment(GapAlignment.HORIZONTAL_ALIGNMENT, GapAlignment.ALIGN_TO_CENTER, 0);
+			this.verticalAlignment = 0.5f;
+			this.horizontalAlignment = 0.5f;
 			this.yPos = yPos;
 			this.xPos = xPos;
 			this.height = height;
@@ -395,10 +377,12 @@ public class RescaleGridLayout implements LayoutManager2 {
 		 * @param horizontalAlignment The horizontal alignment of the component in its grid cells
 		 * @param verticalAlignment The vertical alignment of the component in its grid cells
 		 */
-		public RescaleGridConstraints(int xPos, int yPos, double width, double height, GapAlignment horizontalAlignment, GapAlignment verticalAlignment){
+		public RescaleGridConstraints(int xPos, int yPos, float width, float height, float horizontalAlignment, float verticalAlignment){
 			if((xPos < 0) || (yPos < 0)) throw new IllegalArgumentException("Positions must be >= 1!");
 			if((width <= 0) || (height <= 0)) throw new IllegalArgumentException("Width and height must be bigger than 0");
-			GapAlignment.evaluateAlignments(horizontalAlignment, verticalAlignment);
+			RescaleGridLayout.evaluateAlignment(horizontalAlignment);
+			RescaleGridLayout.evaluateAlignment(verticalAlignment);
+			
 			this.verticalAlignment = verticalAlignment;
 			this.horizontalAlignment = horizontalAlignment;
 			this.yPos = yPos;
@@ -406,6 +390,6 @@ public class RescaleGridLayout implements LayoutManager2 {
 			this.height = height;
 			this.width = width;
 		}
-		
+				
 	}
 }
