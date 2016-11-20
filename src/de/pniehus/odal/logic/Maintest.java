@@ -70,7 +70,7 @@ public class Maintest {
 		if(s.next().equals("yes")) k.start();
 		test.setVisible(false);
 		test.dispose();
-		*/
+		
 		
 		Scanner s = new Scanner(System.in);
 		System.out.println("Enter your url:");
@@ -99,6 +99,8 @@ public class Maintest {
 		if(s.next().equals("yes")){
 			k.start();
 		}
+		*/
+		
 		
 	}
 }

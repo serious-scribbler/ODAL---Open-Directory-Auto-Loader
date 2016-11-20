@@ -17,11 +17,10 @@ import com.sun.javafx.collections.MappingChange.Map;
  * 
  * 
  * The alignment determines where the component is placed, if the dimensions are
- * smaller than a full grid. For example a width of 1.3 combined with a left
- * alignment and a gapRatio of 0.1 would result in the component being drawn 0.07*gridSize from the 
- * left boarder of the 1st of 2 grids.
- * Positions will be set in grid coordinates, the position in the grid is determined by
- * the alignment (like in the last example). A component smaller than a full grid cell
+ * smaller than a full grid. Values smaller than 0.5f align the component left, 0.5f aligns the component
+ * in the center and everything larger than 0.5f aligns the component right
+ * Positions are  set in grid coordinates, the position in the grid is determined by
+ * the alignment. A component smaller than a full grid cell
  * will be placed in the cell according to its alignment. 
  * 
  * The container which is layed out using this LayoutManager will keep its size calculated or set at
@@ -166,12 +165,6 @@ public class RescaleGridLayout implements LayoutManager2 {
 		insetTop += Math.round(insetTop * verticalInsets);
 		insetLeft += Math.round(insetLeft * horizontalInsets);
 		
-		/* position des grids y: insetTop + posY * cellSize
-		 	x: insetLeft + posX * cellSize
-		Tats�chliche Position des Objektes berechnen nicht vergessen!
-		
-		
-		*/
 		
 		Iterator iterate = components.entrySet().iterator();
 		while(iterate.hasNext()){
@@ -184,14 +177,13 @@ public class RescaleGridLayout implements LayoutManager2 {
 			int height = Math.round(constraint.height * cellSize);
 			int width = Math.round(constraint.width * cellSize);
 			
-			if(width % cellSize != 0){
-				// calculate insets (auf x margin addieren)
-			}
+			int componentVertInset = ((int) Math.ceil(constraint.height) * cellSize) - height;
+			int componentHorInset = ((int) Math.ceil(constraint.width) * cellSize) - width;
 			
-			if(height % cellSize != 0){
-				// calculate insets (auf y margin addieren)
-			}
-			// TODO calculate actual position
+			int xPos = xMargin + Math.round(componentHorInset * constraint.horizontalAlignment);
+			int yPos = yMargin + Math.round(componentVertInset * constraint.verticalAlignment);
+			
+			c.setBounds(xPos, yPos, width, height);
 			
 		}
 	}
