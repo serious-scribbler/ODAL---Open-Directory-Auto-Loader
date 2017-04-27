@@ -17,6 +17,8 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import de.pniehus.odal.logic.IndexOfParser;
 import de.pniehus.odal.logic.RemoteFile;
+import de.pniehus.odal.logic.TaskController;
+import de.pniehus.odal.logic.TaskMonitor;
 import de.pniehus.odal.utils.*;
 import de.pniehus.odal.utils.ODALCheckBoxList.Listener;
 
@@ -33,6 +35,8 @@ public class OdalGui {
 	private static String version = "v0.0.1";
 	private RemoteFile root;
 	private int nextFilter = 0;
+	private int totalFiles = 0;
+	boolean filesSelected = false;
 	/**
 	 * True = filters were already selected (used for automated screen selection)
 	 */
@@ -116,16 +120,37 @@ public class OdalGui {
 			OutputSelector w = new OutputSelector();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
-		} else if(!filtersSet && filters.size() != 0){
-			// Show filter dialog
-		} else if(!skipFileSelection){
+		} else if(!filtersSet){
+			if(filters.size() == 0){
+				filtersSet = true;
+				determineNextWindow();
+				return;
+			}
+			filtersSet = true;
+			FilterSelector sel = new FilterSelector();
+			gui.addWindow(sel);
+			gui.setActiveWindow(sel);
+		} else if(!skipFileSelection && !filesSelected){
+			filesSelected = true;
 			FileSelector sel = new FileSelector(root);
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else{
-			BusyWindow b = new BusyWindow("Applying filters...");
+			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
+			
+			for(Filter f : filters){
+				if(f.isEnabled()){
+					b.setTaskInfo("Applying " + f.getName() + "-FILTER...");
+					f.filter(root);
+				}
+			}
+			
+			TaskController ctrl = new TaskController("Download", keepStructure, root, outputDir);
+			ctrl.addMonitor(b);
+			totalFiles = ctrl.getNumberOfFiles();
+			ctrl.start();
 		}
 	}
 	
@@ -408,7 +433,9 @@ public class OdalGui {
 	 * @author Phil
 	 *
 	 */
-	private class BusyWindow extends AbstractWindow{
+	private class BusyWindow extends AbstractWindow implements TaskMonitor{
+		
+		private Label taskInfo;
 		
 		/**
 		 * Creates a BusyWindow
@@ -418,8 +445,34 @@ public class OdalGui {
 			super("ODAL - Performing background task!");
 			setHints(Arrays.asList(Window.Hint.FULL_SCREEN));
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
-			p.addComponent(new Label(text));	
+			taskInfo = new Label("");
+			p.addComponent(new Label(text));
+			p.addComponent(taskInfo);
 			setComponent(p);
 		}
+		
+		/**
+		 * Updates the updatable status label
+		 * @param info
+		 */
+		public void setTaskInfo(String info){
+			taskInfo.setText(info);
+		}
+
+		@Override
+		public void errorOccured(String errorMessage) {
+			System.out.println("ERROR: " + errorMessage);
+		}
+
+		@Override
+		public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
+			taskInfo.setText("Downloaded " + (totalFiles - filesLeft) + " of " + totalFiles);		
+			if(filesLeft == 0){
+				System.out.println("Download finnished!");
+				System.exit(0);
+			}
+		}
+		
+		
 	}
 }
