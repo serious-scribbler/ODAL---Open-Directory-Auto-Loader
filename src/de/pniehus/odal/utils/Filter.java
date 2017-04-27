@@ -65,6 +65,12 @@ public abstract class Filter {
 	}
 	
 	/**
+	 * This method configures the filter with the selected parameters
+	 * @param params
+	 */
+	public abstract void setUp(String params);
+	
+	/**
 	 * Overwrites the toString() method, returns the filters name
 	 */
 	public String toString(){

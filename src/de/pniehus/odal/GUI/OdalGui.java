@@ -92,7 +92,7 @@ public class OdalGui {
 				case "-f":
 					checkArgument(args, i);
 					checkArgument(args, i+1); // Checks for the existence of params
-					// Enable selected filter
+					// TODO call setUp-method and enable filter
 					filtersSet = true;
 					i = i + 2;
 				case "/?":
@@ -131,11 +131,6 @@ public class OdalGui {
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else if(!skipFileSelection && !filesSelected){
-			filesSelected = true;
-			FileSelector sel = new FileSelector(root);
-			gui.addWindow(sel);
-			gui.setActiveWindow(sel);
-		} else{
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
@@ -146,10 +141,22 @@ public class OdalGui {
 					f.filter(root);
 				}
 			}
+			filesSelected = true;
+			FileSelector sel = new FileSelector(root);
+			gui.addWindow(sel);
+			gui.setActiveWindow(sel);
+		} else{
+			BusyWindow b = new BusyWindow("Processing task...");
+			gui.addWindow(b);
+			gui.setActiveWindow(b);
 			
 			TaskController ctrl = new TaskController("Download", keepStructure, root, outputDir);
 			ctrl.addMonitor(b);
 			totalFiles = ctrl.getNumberOfFiles();
+			if(totalFiles == 0){
+				System.out.println("Nothing to download, exiting!");
+				System.exit(0);
+			}
 			ctrl.start();
 		}
 	}
@@ -162,11 +169,14 @@ public class OdalGui {
 			int filterX = 0; // counts the number of enabled filters
 			Filter run = null;
 			for(Filter f : filters){
-				if(f.isEnabled()) filterX++;
-				if(filterX == nextFilter){
-					nextFilter++;
-					run = f;
-					break;
+				System.out.println(f.getName() + " is " + f.isEnabled());
+				if(f.isEnabled()){
+					if(filterX == nextFilter){
+						nextFilter++;
+						run = f;
+						break;
+					}
+					filterX++;
 				}
 			}
 			if(run != null){

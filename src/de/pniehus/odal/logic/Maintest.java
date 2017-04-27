@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -26,6 +27,7 @@ import de.pniehus.odal.GUI.RescaleGridConstraints;
 import de.pniehus.odal.GUI.RescaleGridLayout;
 import de.pniehus.odal.utils.DeepCopy;
 import de.pniehus.odal.utils.Filter;
+import de.pniehus.odal.utils.filters.RegexFilter;
 
 public class Maintest {
 	public static void main(String[] args) throws Exception {
@@ -130,6 +132,8 @@ public class Maintest {
 			control.start();
 		}*/
 		
-		OdalGui ogui = new OdalGui(args, new ArrayList<Filter>());
+		List<Filter> filters = new ArrayList<Filter>();
+		filters.add(new RegexFilter());
+		OdalGui ogui = new OdalGui(args, filters);
 	}
 }
