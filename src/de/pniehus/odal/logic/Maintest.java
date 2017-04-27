@@ -1,6 +1,7 @@
 package de.pniehus.odal.logic;
 
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +13,15 @@ import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.oracle.xmlns.internal.webservices.jaxws_databinding.JavaParam;
 
 import de.pniehus.odal.GUI.AnimatedGlassPane;
 import de.pniehus.odal.GUI.GlassPaneAnimation;
 import de.pniehus.odal.GUI.LockableAnimatedPanel;
+import de.pniehus.odal.GUI.RescaleGridConstraints;
+import de.pniehus.odal.GUI.RescaleGridLayout;
 import de.pniehus.odal.utils.DeepCopy;
 
 public class Maintest {
@@ -71,36 +77,49 @@ public class Maintest {
 		test.setVisible(false);
 		test.dispose();
 		
+		*/
+		JFrame testing = new JFrame("Testing");
+		testing.setSize(1280, 720);
+		JPanel rescaleGridTest = new JPanel(new RescaleGridLayout(testing.getSize(), 16, 9, 0.5f, 0.5f));
 		
-		Scanner s = new Scanner(System.in);
-		System.out.println("Enter your url:");
-		IndexOfParser parse = new IndexOfParser(false);
-		String url = s.next();
-		System.out.println("Parsing url...");
-		RemoteFile root = parse.parseURL(url, true, "root");
-		System.out.println(root);
-		Thread.sleep(800);
-		System.out.println("Enter the path to the output directory");
-		String path = s.next();
-		TaskController k = new TaskController("test", true, root, new File(path));
-		k.addMonitor(new TaskMonitor() {
+		rescaleGridTest.add(new JButton("Oben, ganze breite"), new RescaleGridConstraints(0, 0, 17, 1));
+		rescaleGridTest.add(new JButton("3te Reihe, viertel"), new RescaleGridConstraints(0, 2, 4, 1));
+		rescaleGridTest.add(new JButton("2te Reihe, 2tes viertel"), new RescaleGridConstraints(4, 1, 8, 2));
+		rescaleGridTest.add(new JButton("1x1"), new RescaleGridConstraints(0, 1, 1f, 1f, 0.5f, 0.5f));
+		rescaleGridTest.add(new JButton("0.5²"), new RescaleGridConstraints(1, 1, 0.5f, 0.5f, 0f, 0.5f));
+		
+		rescaleGridTest.add(new JButton("+"), new RescaleGridConstraints(1, 1, 1f, 0.25f, 0f, 0f));
+		rescaleGridTest.add(new JButton("-"), new RescaleGridConstraints(1, 1, 1f, 0.25f, 0f, 1f));
+		
+		testing.add(rescaleGridTest);
+		testing.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		testing.setVisible(true);
+		
+		/*
+		if(args.length != 2){
+			System.out.println("usage: odal.jar <path> <url>");
+			System.exit(0);
+		}
+		IndexOfParser parser = new IndexOfParser(false);
+		RemoteFile root = parser.parseURL(args[1], true, "root");
+		TaskController control = new TaskController("task", true, root, new File(args[0]));
+		control.addMonitor(new TaskMonitor() {
+			
+			@Override
+			public void errorOccured(String errorMessage) {
+				System.out.println("ERROR: " + errorMessage);				
+			}
 			
 			@Override
 			public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
-					System.out.println("Files left: " + filesLeft);			
-			}
-
-			@Override
-			public void errorOccured(String errorMessage) {
-				System.out.println(errorMessage);				
+				System.out.println("Files left: " + filesLeft + " Elapsed time: " + ((double) timeElapsed)/1000 + "s");				
 			}
 		});
-		System.out.println("Found " + k.getNumberOfFiles() + " files, download (yes/no)?");
-		if(s.next().equals("yes")){
-			k.start();
-		}
-		*/
-		
-		
+		Scanner s = new Scanner(System.in);
+		System.out.println("Found " + RemoteFile.countFiles(root) + " files! Download (yes/no)?");
+		String in = s.next();
+		if(in.equalsIgnoreCase("yes") || in.equalsIgnoreCase("y")){
+			control.start();
+		}*/
 	}
 }
