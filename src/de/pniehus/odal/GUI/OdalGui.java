@@ -32,6 +32,7 @@ public class OdalGui {
 	private List<Filter> filters;
 	private static String version = "v0.0.1";
 	private RemoteFile root;
+	private int nextFilter = 0;
 	/**
 	 * True = filters were already selected (used for automated screen selection)
 	 */
@@ -115,14 +116,41 @@ public class OdalGui {
 			OutputSelector w = new OutputSelector();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
+		} else if(!filtersSet && filters.size() != 0){
+			// Show filter dialog
 		} else if(!skipFileSelection){
 			FileSelector sel = new FileSelector(root);
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
-		} else if(!filtersSet && filters.size() != 0){
-			// Show filter dialog
 		} else{
-			// RUN Filters, DOWNLOAD AND SHOW PROGRESS
+			BusyWindow b = new BusyWindow("Applying filters...");
+			gui.addWindow(b);
+			gui.setActiveWindow(b);
+		}
+	}
+	
+	/**
+	 * Shows the configuration dialog for the next enabled filter, calls determineNextWindow() if all filters were configured
+	 */
+	public void configureNextFilter(){
+		if(filters != null && filters.size() != 0){
+			int filterX = 0; // counts the number of enabled filters
+			Filter run = null;
+			for(Filter f : filters){
+				if(f.isEnabled()) filterX++;
+				if(filterX == nextFilter){
+					nextFilter++;
+					run = f;
+					break;
+				}
+			}
+			if(run != null){
+				AbstractWindow w = run.getSettingUI(this);
+				gui.addWindow(w);
+				gui.setActiveWindow(w);
+			} else{
+				determineNextWindow();
+			}
 		}
 	}
 	
@@ -262,6 +290,7 @@ public class OdalGui {
 					for(RemoteFile rm : deselected){
 						if(rm == null) continue;
 						RemoteFile parent = (RemoteFile)rm.getParent();
+						if(parent == null) continue;
 						parent.remove(rm); // Removes all files which haven't been selected by the user
 					}
 					determineNextWindow();
@@ -297,6 +326,44 @@ public class OdalGui {
 				RemoteFile child = (RemoteFile) tree.getChildAt(i);
 				addSubTree(child);
 			}
+		}
+		
+	}
+	
+	/**
+	 * This Window is used to select which filters will be applied to the input
+	 * @author Phil Niehus
+	 *
+	 */
+	public class FilterSelector extends AbstractWindow{
+		
+		private ODALCheckBoxList<Filter> filterList;
+		public FilterSelector(){
+			super("ODAL - Select filters");
+			setHints(Arrays.asList(Window.Hint.FULL_SCREEN));
+			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
+			p.addComponent(new Label("Select all filters you want to apply to the parsed directory structure:"));
+			
+			filterList = new ODALCheckBoxList<Filter>();
+			for(Filter f : filters){
+				filterList.addItem(f);
+			}
+			Button b = new Button("Configure filters", new Runnable() {
+				
+				@Override
+				public void run() {
+					List<Filter> selected = filterList.getCheckedItems();
+					for(Filter f : selected){
+						f.setEnabled(true); // Enables all selected filters
+					}
+					configureNextFilter();
+				}
+			});
+			
+			p.addComponent(filterList);
+			p.addComponent(b);
+			
+			setComponent(p);
 		}
 		
 	}

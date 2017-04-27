@@ -1,8 +1,11 @@
 package de.pniehus.odal.utils;
 
 
+import com.googlecode.lanterna.gui2.AbstractWindow;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Window;
 
+import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.logic.RemoteFile;
 
 public abstract class Filter {
@@ -36,9 +39,10 @@ public abstract class Filter {
 	
 	/**
 	 * This method needs to return a Window with settings for this filter
+	 * @param og The gui of odal, this method needs to call og.configureNextFilter() after the configuration is finnished
 	 * @return
 	 */
-	public abstract Window getSettingUI();
+	public abstract AbstractWindow getSettingUI(OdalGui og);
 	
 	/**
 	 * This method will apply the filter (returns a filtered version of the filetree)
@@ -58,5 +62,12 @@ public abstract class Filter {
 	 */
 	public void setEnabled(boolean enable){
 		this.enabled = enable;
+	}
+	
+	/**
+	 * Overwrites the toString() method, returns the filters name
+	 */
+	public String toString(){
+		return name;
 	}
 }
