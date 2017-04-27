@@ -56,7 +56,6 @@ public class IndexOfParser {
 			String directoryName) throws IOException {
 		if (url == null)
 			throw new NullPointerException("URLS may not be null");
-		
 		dirs.add(url);
 		
 		RemoteFile tree = new 

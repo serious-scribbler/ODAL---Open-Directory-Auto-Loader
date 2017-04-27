@@ -1,6 +1,7 @@
 package de.pniehus.odal.utils;
 
-import javax.swing.JPanel;
+
+import com.googlecode.lanterna.gui2.Window;
 
 import de.pniehus.odal.logic.RemoteFile;
 
@@ -34,16 +35,22 @@ public abstract class Filter {
 	}
 	
 	/**
-	 * This method needs to return a JPanel with settings for this filter
+	 * This method needs to return a Window with settings for this filter
 	 * @return
 	 */
-	public abstract JPanel getSettingUI();
+	public abstract Window getSettingUI();
 	
 	/**
-	 * This method will apply the filter (return a filtered version of the filetree
+	 * This method will apply the filter (returns a filtered version of the filetree)
 	 * @param filetree
 	 */
 	public abstract void filter(RemoteFile filetree);
+	
+	/**
+	 * This method will print the filters help, which describes its functions and parameters
+	 * @return
+	 */
+	public abstract String getHelpText();
 	
 	/**
 	 * Enables or disables the filter

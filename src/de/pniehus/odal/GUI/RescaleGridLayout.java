@@ -14,7 +14,7 @@ import com.sun.javafx.collections.MappingChange.Map;
 /**
  * Scales up all components based on a grid of squares
  * 
- * 
+ * TODO change -> no GapAlignment, alignment as double
  * 
  * The alignment determines where the component is placed, if the dimensions are
  * smaller than a full grid. Values smaller than 0.5f align the component left, 0.5f aligns the component

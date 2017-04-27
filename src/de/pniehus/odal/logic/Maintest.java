@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -20,14 +21,17 @@ import com.oracle.xmlns.internal.webservices.jaxws_databinding.JavaParam;
 import de.pniehus.odal.GUI.AnimatedGlassPane;
 import de.pniehus.odal.GUI.GlassPaneAnimation;
 import de.pniehus.odal.GUI.LockableAnimatedPanel;
+import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.GUI.RescaleGridConstraints;
 import de.pniehus.odal.GUI.RescaleGridLayout;
 import de.pniehus.odal.utils.DeepCopy;
+import de.pniehus.odal.utils.Filter;
 
 public class Maintest {
 	public static void main(String[] args) throws Exception {
 		
-		/*IndexOfParser parse = new IndexOfParser(false);
+		/* TEST 1
+		IndexOfParser parse = new IndexOfParser(false);
 		JFrame test = new JFrame("Running");
 		test.setSize(new Dimension(1280, 720));
 		LockableAnimatedPanel lockable = new LockableAnimatedPanel(new GlassPaneAnimation(GlassPaneAnimation.readImagesFromDirectory(new File("C:/Users/Phil/Desktop/anim test")), 500l));
@@ -78,6 +82,8 @@ public class Maintest {
 		test.dispose();
 		
 		*/
+		
+		/* TEST 2
 		JFrame testing = new JFrame("Testing");
 		testing.setSize(1280, 720);
 		JPanel rescaleGridTest = new JPanel(new RescaleGridLayout(testing.getSize(), 16, 9, 0.5f, 0.5f));
@@ -95,7 +101,9 @@ public class Maintest {
 		testing.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		testing.setVisible(true);
 		
-		/*
+		*/
+		
+		/* TEST 3
 		if(args.length != 2){
 			System.out.println("usage: odal.jar <path> <url>");
 			System.exit(0);
@@ -121,5 +129,7 @@ public class Maintest {
 		if(in.equalsIgnoreCase("yes") || in.equalsIgnoreCase("y")){
 			control.start();
 		}*/
+		
+		OdalGui ogui = new OdalGui(args, new ArrayList<Filter>());
 	}
 }
