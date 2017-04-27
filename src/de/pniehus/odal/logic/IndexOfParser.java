@@ -47,19 +47,19 @@ public class IndexOfParser {
 	
 	public RemoteFile parseURL(String url, boolean parseSubdirs,
 			String directoryName) throws IOException {
-		RemoteFile f = parse(url, parseSubdirs, directoryName);
+		RemoteFile f = parse(url, parseSubdirs, directoryName, 0);
 		dirs.clear();
 		return f;
 	}
 	
 	private RemoteFile parse(String url, boolean parseSubdirs,
-			String directoryName) throws IOException {
+			String directoryName, int level) throws IOException {
 		if (url == null)
 			throw new NullPointerException("URLS may not be null");
 		dirs.add(url);
 		
 		RemoteFile tree = new 
-		RemoteFile(directoryName);
+		RemoteFile(directoryName, level);
 
 		Document doc = Jsoup.connect(url).get();
 		Elements links = doc.select("a[href]");
@@ -80,7 +80,7 @@ public class IndexOfParser {
 						if (parseSubdirs) {
 							if(dirs.contains(currentLink)) continue;
 							dirs.add(currentLink);
-							RemoteFile sub = parse(currentLink, true, name);
+							RemoteFile sub = parse(currentLink, true, name, level+1);
 							if (sub != null && sub.isDirectory())
 								tree.add(sub);
 						}
@@ -95,7 +95,7 @@ public class IndexOfParser {
 							if (isDirectory(linkInfo, currentLink)) {
 								if(dirs.contains(currentLink)) continue;
 								dirs.add(currentLink);
-								RemoteFile sub = parse(currentLink, true, name);
+								RemoteFile sub = parse(currentLink, true, name, level+1);
 								if (sub != null && sub.isDirectory())
 									tree.add(sub);
 							}
@@ -107,7 +107,7 @@ public class IndexOfParser {
 				RemoteFileInfo info = new RemoteFileInfo(currentLink,
 						filesize);
 				
-				tree.add(new RemoteFile(name, info));
+				tree.add(new RemoteFile(name, info, level+1));
 			} catch (IOException ioE) {
 				continue; // TODO maybe handle better
 			}

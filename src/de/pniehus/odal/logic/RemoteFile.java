@@ -12,15 +12,17 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;
 	private String path;
+	private final int level;
 	/**
 	 * Creates a RemoteFile as a single file with the given name and info
 	 * @param name The name of the File
 	 * @param info The information about the file
 	 */
-	public RemoteFile(String name, RemoteFileInfo info){
+	public RemoteFile(String name, RemoteFileInfo info, int level){
 		super(info);
 		this.name = name;
 		if(name == null) name = "unknown";
+		this.level = level;
 		setAllowsChildren(false);
 	}
 	
@@ -40,9 +42,10 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * Creates a RemoteFile as a directory
 	 * @param name The name of the directory
 	 */
-	public RemoteFile(String name){
+	public RemoteFile(String name, int level){
 		super();
 		this.name = name;
+		this.level = level;
 		if(name == null) name = "unknown";
 	}
 	
@@ -112,33 +115,28 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	
 	@Override
 	public String toString(){
-		return getStringRepresentation(this, 0);
+		String rep = "";
+		if(isRoot()){
+			return "/";
+		} else{
+			rep = rep + getParent().toString() + name;
+			if(isDirectory()) {
+				rep = rep + "/";
+			}
+			
+		}
+		return repeatChar(' ', level) + rep;
 	}
 	
-	/**
-	 * Returns a String representation for the given file tree
-	 * @param root
-	 * @param depth the depth of the tree
-	 * @return
-	 */
-	private String getStringRepresentation(TreeNode root, int depth){ // TODO fix depth issue
-		String rep = "";
-		if(depth == 0) rep += "+" + ((RemoteFile)root).getName() + "\n";
-		depth++;
-		int childcount = root.getChildCount();
-		for(int i = 0; i < childcount; i++){
-			RemoteFile node = (RemoteFile) root.getChildAt(i);
-			if(node.isDirectory()){
-				rep += repeatChar(' ', depth*2-2) + "+[" + node.getName() + "]\n";
-				rep += getStringRepresentation(node, depth++);
-			} else{
-				rep += repeatChar(' ', depth*2-2) + "|" + node.getName() + "\n";
+	public static void printTree(TreeNode tree){
+		System.out.println(tree);
+		if(!tree.isLeaf()){
+			for(int i = 0; i < tree.getChildCount(); i++){
+				printTree(tree.getChildAt(i));
 			}
 		}
-		depth--;
-		return rep;
+		
 	}
-	
 	/**
 	 * Repeats c n times
 	 * @param c

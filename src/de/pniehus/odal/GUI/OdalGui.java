@@ -18,6 +18,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import de.pniehus.odal.logic.IndexOfParser;
 import de.pniehus.odal.logic.RemoteFile;
 import de.pniehus.odal.utils.*;
+import de.pniehus.odal.utils.ODALCheckBoxList.Listener;
 
 public class OdalGui {
 	
@@ -114,10 +115,14 @@ public class OdalGui {
 			OutputSelector w = new OutputSelector();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
+		} else if(!skipFileSelection){
+			FileSelector sel = new FileSelector(root);
+			gui.addWindow(sel);
+			gui.setActiveWindow(sel);
 		} else if(!filtersSet && filters.size() != 0){
 			// Show filter dialog
 		} else{
-			// RUN DOWNLOAD AND SHOW PROGRESS
+			// RUN Filters, DOWNLOAD AND SHOW PROGRESS
 		}
 	}
 	
@@ -202,6 +207,7 @@ public class OdalGui {
 						url = urlBox.getText();
 						IndexOfParser parser = new IndexOfParser(false);
 						root = parser.parseURL(url, parseSubdirs, "root");
+						System.out.println("Parsed, Number of childs of root: " + root.getChildCount()); // TODO remove
 						determineNextWindow();// Show file selection dialog
 					} catch (Exception e) {
 						gui.setActiveWindow(self);
@@ -216,6 +222,83 @@ public class OdalGui {
 			p.addComponent(parse);
 			setComponent(p);
 		}
+	}
+	
+	/**
+	 * This window contains a selector for files in a tree
+	 * @author Phil Niehus
+	 *
+	 */
+	private class FileSelector extends AbstractWindow{
+		
+		private ODALCheckBoxList<RemoteFile> boxList;
+		private boolean changing = false;
+		
+		public FileSelector(RemoteFile root){
+			super("ODAL - File selector");
+			setHints(Arrays.asList(Window.Hint.FULL_SCREEN));
+			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
+			p.addComponent(new Label("Select/Deselect files. (De-)Selecting a folder will also (de-)select its childs.\nSelecting big Parts of the tree can make the softare seem inresponsive."));
+			TerminalSize tSize = gui.getScreen().getTerminalSize();
+			boxList = new ODALCheckBoxList<RemoteFile>(new TerminalSize(tSize.getColumns()-2, tSize.getRows()-5));
+			
+			boxList.addListener(new Listener() {
+				@Override
+				public void onStatusChanged(int itemIndex, boolean checked){
+					RemoteFile f = boxList.getItemAt(itemIndex);
+					if(f.isDirectory()) setChildState(f, checked);
+				}
+			});
+			addSubTree(root);
+			Button finish = new Button("OK", new Runnable() {
+				
+				@Override
+				public void run() {
+					BusyWindow b = new BusyWindow("Filtering selection");
+					gui.addWindow(b);
+					gui.setActiveWindow(b);
+					List<RemoteFile> deselected = boxList.getItems();
+					deselected.removeAll(boxList.getCheckedItems());
+					for(RemoteFile rm : deselected){
+						if(rm == null) continue;
+						RemoteFile parent = (RemoteFile)rm.getParent();
+						parent.remove(rm); // Removes all files which haven't been selected by the user
+					}
+					determineNextWindow();
+				}
+			});
+			
+			p.addComponent(boxList);
+			p.addComponent(finish);
+			setComponent(p);
+		}
+		
+		/**
+		 * Recursively selects children and sets their state according to their parent
+		 * @param f
+		 * @param state
+		 */
+		private void setChildState(RemoteFile f, boolean state){
+			boxList.setSilentlyChecked(f, state);
+			if(f.isDirectory()){
+				for(int i = 0; i < f.getChildCount(); i++){
+					setChildState((RemoteFile) f.getChildAt(i), state);
+				}
+			}
+		}
+		
+		/**
+		 * Adds tree and all its child to the checkbox list
+		 * @param tree
+		 */
+		private void addSubTree(RemoteFile tree){
+			boxList.addItem(tree);
+			for(int i = 0; i < tree.getChildCount(); i++){
+				RemoteFile child = (RemoteFile) tree.getChildAt(i);
+				addSubTree(child);
+			}
+		}
+		
 	}
 	
 	/**
