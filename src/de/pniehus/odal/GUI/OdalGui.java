@@ -324,6 +324,7 @@ public class OdalGui {
 					deselected.removeAll(boxList.getCheckedItems());
 					for(RemoteFile rm : deselected){
 						if(rm == null) continue;
+						if(rm.isRoot()) continue;
 						RemoteFile parent = (RemoteFile)rm.getParent();
 						if(parent == null) continue;
 						parent.remove(rm); // Removes all files which haven't been selected by the user

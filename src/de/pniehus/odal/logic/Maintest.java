@@ -27,6 +27,7 @@ import de.pniehus.odal.GUI.RescaleGridConstraints;
 import de.pniehus.odal.GUI.RescaleGridLayout;
 import de.pniehus.odal.utils.DeepCopy;
 import de.pniehus.odal.utils.Filter;
+import de.pniehus.odal.utils.filters.FileTypeFilter;
 import de.pniehus.odal.utils.filters.RegexFilter;
 
 public class Maintest {
@@ -134,6 +135,7 @@ public class Maintest {
 		
 		List<Filter> filters = new ArrayList<Filter>();
 		filters.add(new RegexFilter());
+		filters.add(new FileTypeFilter());
 		OdalGui ogui = new OdalGui(args, filters);
 	}
 }

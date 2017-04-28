@@ -27,23 +27,6 @@ public class RegexFilter extends Filter{
 	}
 
 	@Override
-	public void filter(RemoteFile filetree) {
-		if(filetree == null) return;
-		if(filetree.isDirectory()){
-			for(int i = 0; i < filetree.getChildCount(); i++){
-				RemoteFile child = (RemoteFile) filetree.getChildAt(i);
-				filter(child);
-			}
-		} else{
-			String filtered = filetree.getName().replaceAll(filterBy, ""); //Replaces matching strings with nothing
-			if(filtered.length() > 0){ // if filtered contains something, the name doesn't match
-				RemoteFile parent = (RemoteFile) filetree.getParent();
-				if(parent != null) parent.remove(filetree);
-			}
-		}
-	}
-
-	@Override
 	public String getHelpText() {
 		return "matches filenames against the given regex\nUsage: provide any regex as parameter\n";
 	}
@@ -77,5 +60,15 @@ public class RegexFilter extends Filter{
 			p.addComponent(ready);
 			setComponent(p);
 		}
+	}
+	
+	@Override
+	public boolean applyFilter(RemoteFile filetree) {
+		String filtered = filetree.getName().replaceAll(filterBy, ""); //Replaces matching strings with nothing
+		if(filtered.length() > 0){ // if filtered contains something, the name doesn't match
+			filetree.removeFromParent();
+			return true;
+		}
+		return false;
 	}
 }

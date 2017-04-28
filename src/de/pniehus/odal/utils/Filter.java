@@ -48,7 +48,37 @@ public abstract class Filter {
 	 * This method will apply the filter (returns a filtered version of the filetree)
 	 * @param filetree
 	 */
-	public abstract void filter(RemoteFile filetree);
+	public void filter(RemoteFile filetree) {
+		if(filetree == null) return;
+		if(filetree.isLeaf()){
+			applyFilter(filetree);
+			return;
+		} else{
+			int checked = 0;
+			int origCount = filetree.getChildCount();
+			int current = 0;
+			while(checked < origCount){
+				RemoteFile currentlyChecking = (RemoteFile) filetree.getChildAt(current);
+				if(currentlyChecking.isDirectory()){
+					filter(currentlyChecking);
+					current++;
+				} else{
+					if(!applyFilter(currentlyChecking)){
+						current++;
+					}
+				}
+				checked++;
+			}
+		}
+	}
+
+	/**
+	 * This method is called by filter() for all leaves and should remove the leaf from its parent if it matches the filter
+	 * This method has to return true when it removes a leave from its parent
+	 * @param filetree
+	 * @return {@code true} if filetree has been removed from its parent, otherwise {@code false}
+	 */
+	public abstract boolean applyFilter(RemoteFile filetree);
 	
 	/**
 	 * This method will print the filters help, which describes its functions and parameters

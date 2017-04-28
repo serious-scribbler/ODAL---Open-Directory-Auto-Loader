@@ -128,6 +128,18 @@ public class RemoteFile extends DefaultMutableTreeNode{
 		return repeatChar(' ', level) + rep;
 	}
 	
+	/**
+	 * Removes this RemoteFile from its parent
+	 */
+	public void removeFromParent(){
+		RemoteFile parent = (RemoteFile) this.getParent();
+		if(parent != null) parent.remove(this);
+	}
+	
+	/**
+	 * Prints the given RemoteFile in a formatted manner
+	 * @param tree
+	 */
 	public static void printTree(TreeNode tree){
 		System.out.println(tree);
 		if(!tree.isLeaf()){
@@ -137,6 +149,7 @@ public class RemoteFile extends DefaultMutableTreeNode{
 		}
 		
 	}
+	
 	/**
 	 * Repeats c n times
 	 * @param c
