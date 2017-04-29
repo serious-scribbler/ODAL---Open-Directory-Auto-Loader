@@ -251,7 +251,7 @@ public class OdalGui {
 			setHints(Arrays.asList(Window.Hint.FULL_SCREEN));
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
 			final Label l = new Label("Enter your URL:");
-			final TextBox urlBox = new TextBox(new TerminalSize(gui.getScreen().getTerminalSize().getColumns()-2, 1), TextBox.Style.SINGLE_LINE);
+			final OdalTextBox urlBox = new OdalTextBox(new TerminalSize(gui.getScreen().getTerminalSize().getColumns()-2, 1), TextBox.Style.SINGLE_LINE);
 			if(url != null) urlBox.setText(url);
 			final CheckBox subdirs = new CheckBox("Parse subdirectories");
 			final CheckBox structure = new CheckBox("Keep original file structure");

@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="H:/ODAL---Open-Directory-Auto-Loader/middleware/jsoup-1.10.1.jar"/>
-	<classpathentry kind="lib" path="H:/ODAL---Open-Directory-Auto-Loader/middleware/lanterna-3.0.0-rc1.jar"/>
+	<classpathentry kind="lib" path="C:/Java/ODAL---Open-Directory-Auto-Loader/middleware/jsoup-1.10.1.jar"/>
+	<classpathentry kind="lib" path="C:/Java/ODAL---Open-Directory-Auto-Loader/middleware/lanterna-3.0.0-rc1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
