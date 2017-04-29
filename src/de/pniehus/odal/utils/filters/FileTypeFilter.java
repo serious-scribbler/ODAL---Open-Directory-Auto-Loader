@@ -72,7 +72,6 @@ public class FileTypeFilter extends Filter{
 		String[] types = params.split(",");
 		for(int i = 0; i < types.length; i++){
 			types[i] = "." + types[i].replaceAll("[\\W]", "");
-			System.out.println(types[i]);
 		}
 		this.types = Arrays.asList(types);
 	}
@@ -96,11 +95,11 @@ public class FileTypeFilter extends Filter{
 				}
 			});
 			
-			p.addComponent(new Label("Seperate filetypes by comma. For Example: pdf,mobi,epub"));
-			p.addComponent(new Label("A ! as first charcter selects all files that don't match the give types."));
-			p.addComponent(new Label("Enter your filetypes:"));
-			p.addComponent(typeBox);
-			p.addComponent(ready);
+			p.addComponent(new Label("Seperate filetypes by comma. For Example: pdf,mobi,epub"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("A ! as first charcter selects all files that don't match the give types."), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("Enter your filetypes:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(typeBox, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+			p.addComponent(ready, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			setComponent(p);
 		}
 	}

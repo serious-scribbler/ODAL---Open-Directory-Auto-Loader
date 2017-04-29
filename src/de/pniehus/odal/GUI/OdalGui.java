@@ -169,7 +169,6 @@ public class OdalGui {
 			int filterX = 0; // counts the number of enabled filters
 			Filter run = null;
 			for(Filter f : filters){
-				System.out.println(f.getName() + " is " + f.isEnabled());
 				if(f.isEnabled()){
 					if(filterX == nextFilter){
 						nextFilter++;
@@ -270,7 +269,6 @@ public class OdalGui {
 						url = urlBox.getText();
 						IndexOfParser parser = new IndexOfParser(false);
 						root = parser.parseURL(url, parseSubdirs, "root");
-						System.out.println("Parsed, Number of childs of root: " + root.getChildCount()); // TODO remove
 						determineNextWindow();// Show file selection dialog
 					} catch (Exception e) {
 						gui.setActiveWindow(self);

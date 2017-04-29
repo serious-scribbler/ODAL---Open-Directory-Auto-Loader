@@ -56,9 +56,9 @@ public class RegexFilter extends Filter{
 				}
 			});
 			
-			p.addComponent(new Label("Enter your regex:"));
-			p.addComponent(regexBox);
-			p.addComponent(ready);
+			p.addComponent(new Label("Enter your regex:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(regexBox, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+			p.addComponent(ready, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			setComponent(p);
 		}
 	}
