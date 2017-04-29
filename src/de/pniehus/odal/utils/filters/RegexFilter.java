@@ -8,6 +8,7 @@ import com.googlecode.lanterna.gui2.*;
 import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.logic.RemoteFile;
 import de.pniehus.odal.utils.Filter;
+import de.pniehus.odal.utils.OdalTextBox;
 
 /**
  * Filters a RemoteFile with set regex
@@ -45,7 +46,7 @@ public class RegexFilter extends Filter{
 			final OdalGui odal = o;
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
 			
-			final TextBox regexBox = new TextBox(new TerminalSize(70, 1), TextBox.Style.SINGLE_LINE);
+			final OdalTextBox regexBox = new OdalTextBox(new TerminalSize(70, 1), TextBox.Style.SINGLE_LINE);
 			Button ready = new Button("OK", new Runnable() {
 				
 				@Override

@@ -417,7 +417,7 @@ public class OdalGui {
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
 			p.addComponent(new Label("Enter the path in which ODAL should save the downloaded files:"));
 			
-			final TextBox path = new TextBox(new TerminalSize(gui.getScreen().getTerminalSize().getColumns()-2, 1), TextBox.Style.SINGLE_LINE);
+			final OdalTextBox path = new OdalTextBox(new TerminalSize(gui.getScreen().getTerminalSize().getColumns()-2, 1), TextBox.Style.SINGLE_LINE);
 			Button select = new Button("Save", new Runnable() {
 				
 				@Override
