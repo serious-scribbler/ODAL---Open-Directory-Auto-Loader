@@ -13,7 +13,7 @@ import de.pniehus.odal.utils.Filter;
 import de.pniehus.odal.utils.OdalTextBox;
 
 /**
- * Filters a RemoteFile structure by filetype
+ * Filters a RemoteFile structure by keyword
  * @author Phil Niehus
  *
  */
@@ -55,7 +55,7 @@ public class KeywordFilter extends Filter{
 	
 	@Override
 	public String getHelpText() {
-		return "selects all files whose name contains at least one of the given keywords.\n\nParameters: Comma separated list of keywords.";
+		return "selects all files whose names contain at least one of the given keywords.\n\nParameters: Comma separated list of keywords.";
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class KeywordFilter extends Filter{
 				}
 			});
 			
-			p.addComponent(new Label("Selects all files whose name contains at least one of the given keywords. Seperate keywords by comma. For Example: car,house,manual"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("Selects all files whose names contain at least one of the given keywords. Seperate keywords by comma. For Example: car,house,manual"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
 			p.addComponent(new Label("Enter your keywords:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
 			p.addComponent(keywordBox, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			p.addComponent(ready, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
