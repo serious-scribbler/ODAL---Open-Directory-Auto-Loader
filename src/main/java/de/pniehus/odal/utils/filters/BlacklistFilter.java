@@ -55,7 +55,7 @@ public class BlacklistFilter extends Filter{
 	
 	@Override
 	public String getHelpText() {
-		return "removes all files whose name contains at least one of the given keywords.\n\nParameters: Comma separated list of blacklist keywords.";
+		return "removes all files whose names contain at least one of the given keywords.\n\nParameters: Comma separated list of blacklist keywords.";
 	}
 
 	@Override
