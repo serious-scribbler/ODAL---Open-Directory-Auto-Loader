@@ -8,6 +8,7 @@ import javax.swing.tree.TreeNode;
  * @author Phil Niehus
  *
  */
+@SuppressWarnings("serial")
 public class RemoteFile extends DefaultMutableTreeNode{
 	
 	private final String name;

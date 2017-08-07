@@ -5,13 +5,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 
-
-
-
-
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.input.KeyStroke;

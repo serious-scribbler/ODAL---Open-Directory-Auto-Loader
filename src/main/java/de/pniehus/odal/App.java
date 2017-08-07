@@ -24,6 +24,7 @@ public class App
 		filters.add(new FileTypeFilter());
 		filters.add(new KeywordFilter());
 		filters.add(new BlacklistFilter());
+		@SuppressWarnings("unused")
 		OdalGui ogui = new OdalGui(args, filters);
     }
 }

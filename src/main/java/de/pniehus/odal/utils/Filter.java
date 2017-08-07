@@ -2,8 +2,6 @@ package de.pniehus.odal.utils;
 
 
 import com.googlecode.lanterna.gui2.AbstractWindow;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Window;
 
 import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.logic.RemoteFile;
