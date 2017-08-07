@@ -32,11 +32,12 @@ public class OdalGui {
 	private File outputDir = null;
 	private String url = null;
 	private List<Filter> filters;
-	private static String version = "v0.0.1";
+	private static String version = "v0.0.3";
 	private RemoteFile root;
 	private int nextFilter = 0;
 	private int totalFiles = 0;
 	boolean filesSelected = false;
+	private boolean  consoleWindows = false; // True when the programm is running in a windows terminal
 	/**
 	 * True = filters were already selected (used for automated screen selection)
 	 */
@@ -45,6 +46,21 @@ public class OdalGui {
 	public OdalGui(String[] args, List<Filter> filters) throws IOException{
 		this.filters = filters;
 		parseArgs(args);
+		
+		if(consoleWindows){
+			System.out.println("Console Mode on Windows is not implemented yet!");
+			if(url == null){
+				System.out.println("No URL selected, exiting!");
+				System.err.println("No URL selected, exiting!");
+				System.exit(1);
+			}
+			if(outputDir == null){
+				System.out.println("No output directory selected, exiting!");
+				System.err.println("No output directory selected, exiting!");
+				System.exit(1);
+			}
+			return;
+		}
 		
 		Terminal terminal = new DefaultTerminalFactory().createTerminal();
 		Screen screen = new TerminalScreen(terminal);
@@ -61,6 +77,13 @@ public class OdalGui {
 	 * @param args
 	 */
 	private void parseArgs(String[] args){
+		if((args.length > 0)){
+			if(System.getProperty("os.name").toLowerCase().contains("windows")){
+				consoleWindows = true;
+				skipFileSelection = true;
+				silent = true;
+			}
+		}
 		for(int i = 0; i < args.length; i++){
 			switch(args[i]){
 				case "-noSub":
@@ -131,6 +154,7 @@ public class OdalGui {
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else if(!skipFileSelection && !filesSelected){
+			// TODO write console version
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
@@ -208,6 +232,9 @@ public class OdalGui {
 		System.out.println("------ Open Directory Auto Loader " + version + " Help------\n");
 		System.out.println("ODAL is a software for downloading files or entire file structures from open directory listings.");
 		System.out.println("The files from the parsed open directories can be selected and filtered before the download starts.\n");
+		System.out.println("\nIMPORTANT INFORMATION ON CONSOLE USE FOR WINDOWS USERS:");
+		System.out.println("Starting the programm from the terminal automatically enables the options -silent and -a.");
+		System.out.println("It is also required to provide the -o and -url option.\n");
 		System.out.println("Commandline parameters:\n");
 		System.out.println("-o <path>\t\tThe path to the output directories, where the downloaded file structure is saved");
 		System.out.println("-url <url>\t\tThe url of the open directory which will be parsed and downloaded");
