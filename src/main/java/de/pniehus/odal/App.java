@@ -6,7 +6,9 @@ import java.util.List;
 
 import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.utils.Filter;
+import de.pniehus.odal.utils.filters.BlacklistFilter;
 import de.pniehus.odal.utils.filters.FileTypeFilter;
+import de.pniehus.odal.utils.filters.KeywordFilter;
 import de.pniehus.odal.utils.filters.RegexFilter;
 
 /**
@@ -20,6 +22,9 @@ public class App
     	List<Filter> filters = new ArrayList<Filter>();
 		filters.add(new RegexFilter());
 		filters.add(new FileTypeFilter());
+		filters.add(new KeywordFilter());
+		filters.add(new BlacklistFilter());
+		@SuppressWarnings("unused")
 		OdalGui ogui = new OdalGui(args, filters);
     }
 }

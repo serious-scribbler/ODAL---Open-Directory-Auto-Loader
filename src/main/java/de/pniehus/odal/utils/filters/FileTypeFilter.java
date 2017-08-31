@@ -1,6 +1,5 @@
 package de.pniehus.odal.utils.filters;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class FileTypeFilter extends Filter{
 	
 	@Override
 	public String getHelpText() {
-		return "matches filetypes gainst the given ones.\n\nParameters: Filetypes without do seperated by comma, put a '!' at the beginning to take all files that don't match.\nExamples:\n'!rar,zip,cfg' (without ' ) selects everything but .rar, .zip and .cfg files\n'pdf,epub,mobi' (whithout ') selects all .pdf and .mobi files";
+		return "matches filetypes against the given ones.\n\nParameters: Filetypes without dot seperated by comma, put a '!' at the beginning to take all files that don't match.\nExamples:\n'!rar,zip,cfg' (without ' ) selects everything but .rar, .zip and .cfg files\n'pdf,epub,mobi' (whithout ') selects all .pdf and .mobi files";
 	}
 
 	@Override
