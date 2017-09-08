@@ -67,7 +67,6 @@ public class OdalGui {
 		
 		gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLACK));
 		
-		// TODO init fileTree
 		gui.addWindowAndWait(new URLWindow());
 	}
 	
@@ -76,6 +75,7 @@ public class OdalGui {
 	 * @param args
 	 */
 	private void parseArgs(String[] args){
+		// TODO fix
 		if((args.length > 0)){
 			if(System.getProperty("os.name").toLowerCase().contains("windows")){
 				consoleWindows = true;
