@@ -25,9 +25,9 @@ public class IndexOfParser {
 	// TODO add error listener support
 	
 	/**
-	 * Size fetching allows to see the total file size before the download is finnished
+	 * Size fetching allows to see the total file size before the download is finished
 	 * This is really time consuming (average 150-175ms) and therefore only recommended for directories
-	 * with a scmall amount of files
+	 * with a small amount of files
 	 * @param enableSizeFetching
 	 */
 	public IndexOfParser(boolean enableSizeFetching){
@@ -89,7 +89,7 @@ public class IndexOfParser {
 					filesize = linkInfo.size;
 				} else{
 					if(lastCharIsSlash(currentLink)){
-						// Ordner oder site
+						// directory or site
 						if(parseSubdirs){
 							URLInfo linkInfo = getInfo(currentLink);
 							if (isDirectory(linkInfo, currentLink)) {
