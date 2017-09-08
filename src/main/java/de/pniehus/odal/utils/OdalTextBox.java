@@ -13,38 +13,31 @@ public class OdalTextBox extends TextBox{
 
 	public OdalTextBox() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public OdalTextBox(String initialContent, Style style) {
 		super(initialContent, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	public OdalTextBox(String initialContent) {
 		super(initialContent);
-		// TODO Auto-generated constructor stub
 	}
 
 	public OdalTextBox(TerminalSize preferredSize, String initialContent,
 			Style style) {
 		super(preferredSize, initialContent, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	public OdalTextBox(TerminalSize preferredSize, String initialContent) {
 		super(preferredSize, initialContent);
-		// TODO Auto-generated constructor stub
 	}
 
 	public OdalTextBox(TerminalSize preferredSize, Style style) {
 		super(preferredSize, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	public OdalTextBox(TerminalSize preferredSize) {
 		super(preferredSize);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
