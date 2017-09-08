@@ -22,7 +22,7 @@ import de.pniehus.odal.utils.filters.RegexFilter;
  */
 public class App {
 	public static void main(String[] args) throws IOException {
-		unsignedSSLSetup();
+		untrustedSSLSetup();
 		List<Filter> filters = new ArrayList<Filter>();
 		filters.add(new RegexFilter());
 		filters.add(new FileTypeFilter());
@@ -32,7 +32,36 @@ public class App {
 		OdalGui ogui = new OdalGui(args, filters);
 	}
 
-	public static void unsignedSSLSetup() {
+	/**
+	 * This method initializes a Trustmanager that accepts self signed ssl certificates
+	 * 
+	 * This code of this method has been taken from
+	 * @see <a href="https://stackoverflow.com/a/4453908">this Stackoverflow post</a>
+	 * and is licensed under the MIT License
+	 * 
+	 * Copyright (c) 2010 nogudnik
+	 * 
+	 * Permission is hereby granted, free of charge, to any person obtaining a
+	 * copy of this software and associated documentation files (the
+	 * "Software"), to deal in the Software without restriction, including
+	 * without limitation the rights to use, copy, modify, merge, publish,
+	 * distribute, sublicense, and/or sell copies of the Software, and to permit
+	 * persons to whom the Software is furnished to do so, subject to the
+	 * following conditions:
+	 * 
+	 * The above copyright notice and this permission notice shall be included
+	 * in all copies or substantial portions of the Software.
+	 * 
+	 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	 * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	 * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	 * NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	 * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	 * USE OR OTHER DEALINGS IN THE SOFTWARE.
+	 * 
+	 */
+	public static void untrustedSSLSetup() {
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
@@ -44,11 +73,11 @@ public class App {
 			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
 			}
 		} };
-		try{
+		try {
 			SSLContext sc = SSLContext.getInstance("SSL");
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch(Exception e){
+		} catch (Exception e) {
 			// TODO Handle
 		}
 	}
