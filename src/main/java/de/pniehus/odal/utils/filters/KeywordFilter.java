@@ -1,5 +1,6 @@
 package de.pniehus.odal.utils.filters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,16 +13,16 @@ import de.pniehus.odal.utils.Filter;
 import de.pniehus.odal.utils.OdalTextBox;
 
 /**
- * Filters a RemoteFile structure by keyword
+ * Filters a RemoteFile structure by a set of keywords
  * @author Phil Niehus
  *
  */
-public class KeywordFilter extends Filter{
+public class KeyWordFilter extends Filter{
 	
-
-	private List<String> keywords = null; // This list contains all keywords
+	private List<String> exclude = new ArrayList<String>();
+	private List<String> include = new ArrayList<String>();
 	
-	public KeywordFilter() {
+	public KeyWordFilter() {
 		super("Keyword");
 	}
 
@@ -31,43 +32,56 @@ public class KeywordFilter extends Filter{
 	}	
 	
 	/**
-	 * This method does the actual filtering
+	 * This method checks if the given file name contains one or more keywords and no keyword from a blacklist
 	 * @param filetree
 	 * @return True if removed
 	 */
 	@Override
 	public boolean applyFilter(RemoteFile filetree){
-		String fileName = filetree.getName().toLowerCase();
+		String fileName = filetree.getName();
 		boolean match = false;
-		for(String kw : keywords){
-			if(fileName.contains(kw)){
+		for(String s : include){
+			if(fileName.contains(s)){
 				match = true;
 				break;
 			}
 		}
-		if(!match){
-			filetree.removeFromParent();
-			return true;
+		for(String s : exclude){
+			if(fileName.contains(s)){
+				filetree.removeFromParent();
+				return true; // Contains a keyword from the blacklist -> removed
+			}
 		}
-		return false;
+		
+		if(match){
+			return false; // Keyword is contained, not removing
+		} else{
+			if(include.size() == 0) return false;
+			filetree.removeFromParent();
+			return true; // keyword not contained removing
+		}
 	}
 	
 	@Override
 	public String getHelpText() {
-		return "selects all files whose names contain at least one of the given keywords.\n\nParameters: Comma separated list of keywords.";
+		return "Filters file names for a set of key words.\n\nParameters: Comma separated keywords, a ! at the beginning of a keyword means, that it may not be included in file names.\nExamples:\n'!fish,blue,red' (without ' ) would leave 'bluecow.jpg' and 'redbird.jpg' in the filestructure and would remove 'bluefish.jpg' from the file structure.";
 	}
 
 	@Override
 	public void setUp(String params) {
 		if(params == null) return;
-		String[] keywords = params.split(",");
-		for(int i = 0; i < keywords.length; i++){
-			keywords[i] = keywords[i].toLowerCase();
+		String[] list = params.split(",");
+		for(int i = 0; i < list.length; i++){
+			if(list[i].startsWith("!")){
+				list[i] = list[i].replaceFirst("!", "");
+				exclude.add(list[i]);
+			} else{
+				include.add(list[i]);
+			}
 		}
-		this.keywords = Arrays.asList(keywords);
 	}
 	
-	private class TypeSettings extends AbstractWindow{
+	private class TypeSettings extends AbstractWindow{ // TODO modify for keyword filter, test filter
 		
 		public TypeSettings(OdalGui o){
 			super("Keyword Filter - Settings");
@@ -76,19 +90,20 @@ public class KeywordFilter extends Filter{
 			final OdalGui odal = o;
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
 			
-			final OdalTextBox keywordBox = new OdalTextBox(new TerminalSize(70, 1), TextBox.Style.SINGLE_LINE);
+			final OdalTextBox typeBox = new OdalTextBox(new TerminalSize(70, 1), TextBox.Style.SINGLE_LINE);
 			Button ready = new Button("OK", new Runnable() {
 				
 				@Override
 				public void run() {
-					setUp(keywordBox.getText());
+					setUp(typeBox.getText());
 					odal.configureNextFilter();
 				}
 			});
 			
-			p.addComponent(new Label("Selects all files whose names contain at least one of the given keywords. Seperate keywords by comma. For Example: car,house,manual"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
-			p.addComponent(new Label("Enter your keywords:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
-			p.addComponent(keywordBox, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+			p.addComponent(new Label("Seperate filetypes by comma. For Example: pdf,mobi,epub"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("A ! as first charcter selects all files that don't match the give types."), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("Enter your filetypes:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(typeBox, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			p.addComponent(ready, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			setComponent(p);
 		}
