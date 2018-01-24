@@ -21,6 +21,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import com.google.gson.Gson;
+
 import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.resources.Profile;
 import de.pniehus.odal.utils.Filter;
@@ -57,6 +59,8 @@ public class App {
 	public static Profile parseArgs(String[] args, List<Filter> filters) {
 		boolean windowsConsole = false;
 		
+		Profile profile = new Profile(filters);
+		
 		Options options = new Options();
 		Options helpOptions = new Options();
 		
@@ -71,7 +75,7 @@ public class App {
 		}
 		
 		options.addOption(profileOption);
-		options.addOption(Option.builder("url").hasArg().argName("url").desc("Sets url of the open directory which will be parsed and downloaded").build());
+		options.addOption(Option.builder("url").hasArg().argName("url").desc("Sets the url of the open directory which will be parsed and downloaded").build());
 		options.addOption(Option.builder("a").longOpt("select-all").desc("Downloads all available files (except the ones removed by filters), overrules the corresponding setting if a profile is used").build());
 		options.addOption(Option.builder("o").longOpt("outputDir").hasArg().argName("directory path").desc("Sets the output directory to the given directory, overrules the corresponding setting if a profile is used").build());
 		
@@ -87,18 +91,69 @@ public class App {
 			
 			if(cmd.getOptions().length == 0){
 				cmd = cliParser.parse(options, args);
-				// TODO handle
+				
+				if(cmd.hasOption("p")){
+					String profileName = cmd.getOptionValue("p");
+					File profileFile = new File(profileName + ".odal");
+					if(profileFile.exists()){
+						try {
+							profile = Profile.loadProfile(profileName);
+							profile.setUserProfile(true);
+						} catch (IOException e) {
+							System.out.println("An error occured while loading the specified profile!");
+						}
+					} else{
+						try {
+							Profile.saveProfile(profileName, profile);
+							System.out.println("The profile " + profileFile.getName() + " has been created!");
+							System.exit(0);
+						} catch (IOException e) {
+							System.out.println("An error occured during the creation of the profile " + profileFile.getName() + " : " + e.getMessage());
+							System.out.println("Terminating.");
+							System.exit(1);
+						}
+					}
+					
+				}
+				
+				if(cmd.hasOption("a")){
+					profile.setSelectAll(true);
+				}
+				
+				if(cmd.hasOption("o")){
+					File out = new File(cmd.getOptionValue("o"));
+					if(out.isDirectory() || out.canWrite()){
+						profile.setOutputPath(out.getAbsolutePath());
+					} else{
+						System.out.println(out.getAbsolutePath() + " is not a directory or not writeable!");
+						System.out.println("Terminating.");
+						System.exit(1);
+					}
+				}
+				
+				if(cmd.hasOption("url")){
+					profile.setUrl(cmd.getOptionValue("url"));
+				} else if(windowsConsole){
+					System.out.println("ERROR: The -url argument is required for consol use on windows systems.");
+					printHelp(filters, options);
+					System.exit(1);
+				}
+				
 			} else{
 				printHelp(filters, options);
 				System.exit(0);
 			}
 		} catch (ParseException e) {
-			System.out.println("\nUnable to parse command line arguments: " + e.getLocalizedMessage());
+			System.out.println("\nUnable to parse command line arguments: " + e.getLocalizedMessage() + "\n");
 			printHelp(filters, options);
 			System.exit(1);
 		}
 		
-		return null;
+		if(windowsConsole){
+			profile.setWindowsConsoleMode(true);
+		}
+		
+		return profile;
 	}
 
 	/**
@@ -113,7 +168,17 @@ public class App {
 		
 		String header = "\n---- Open Directory Auto Loader " + OdalGui.version + " ----\n";
 		if(System.getProperty("os.name").toLowerCase().contains("windows")) header += "\nIMPORTANT INFORMATION ON CONSOLE USE ON WINDOWS SYSTEMS:\nStarting the programm from the terminal requires the use of -p and -url and automatically enables -a.\n ";
-		String footer = "\nPlease report any issues at https://github.com/serious-scribbler/ODAL---Open-Directory-Auto-Loader/issues";
+		
+		// TODO: Make this display optional
+		String footer = "\n\nFilter configuration:\n";
+		footer += "Profiles enable all filters with sample data by default,\nremove their corresponding configuration line from your profile to disable them\n";
+		for (Filter f : filters) {
+			footer += "\n" + f.getName() + "-filter\n";
+			footer += f.getHelpText();
+			footer += "\n";
+		}
+		
+		footer += "\nPLEASE REPORT ANY ISSUES AT https://github.com/serious-scribbler/ODAL---Open-Directory-Auto-Loader/issues";
 		String jarName = "";
 		
 		try {
@@ -123,33 +188,6 @@ public class App {
 		}
 		
 		helpFormatter.printHelp("java -jar " + jarName, header, opt, footer, true);
-		/*
-		System.out.println("------ Open Directory Auto Loader " + OdalGui.version + " Help------\n");
-		System.out.println(
-				"ODAL is a software for downloading files or entire file structures from open directory listings.");
-		System.out.println(
-				"The files from the parsed open directories can be selected and filtered before the download starts.\n");
-		System.out.println("\nIMPORTANT INFORMATION ON CONSOLE USE FOR WINDOWS USERS:");
-		System.out.println(
-				"Starting the programm from the terminal requires the use of -p and -url and automatically enables -a.");
-		System.out.println("Commandline parameters:\n");
-		System.out.println(
-				"-p <profile name>\t\tLoads the profile with the given name or generates a <profile name>.odal file");
-		System.out.println("-url <url>\t\tThe url of the open directory which will be parsed and downloaded");
-		System.out.println(
-				"-a\t\tDownloads all files (except the ones removed by filters, overrules the corresponding setting if a profile is used");
-		System.out.println(
-				"-o <directory path>\t\t Sets the outputdirectory to the given path, overrules the corresponding setting if a profile is used");
-		System.out.println("/?\t\tDisplays this dialog");
-		System.out.println("-help\t\tDisplays this dialog");
-		System.out.println("--help\t\tDisplays this dialog");
-		System.out.println("\n\nAvailable filters:\n");
-		for (Filter f : filters) {
-			System.out.println(f.getName() + "-filter\n");
-			System.out.println(f.getHelpText());
-			System.out.println("\n");
-		}
-		*/
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class OdalGui {
 	private File outputDir = null;
 	private String url = null;
 	private List<Filter> filters;
-	public static final String version = "v0.1.0-SNAPSHOT";
+	public static final String version = "v0.1.1-SNAPSHOT";
 	private RemoteFile root;
 	private int nextFilter = 0;
 	private int totalFiles = 0;

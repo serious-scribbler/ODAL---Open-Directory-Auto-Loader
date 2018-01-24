@@ -30,6 +30,8 @@ public class Profile {
 	private transient boolean userProfile = false;
 	private String logLevel = "info";
 	private boolean windowsConsoleMode = false;
+	private transient String url;
+
 	private Map<String, String> filterConfig = new HashMap<String, String>();
 
 	public Profile(List<Filter> filters) {
@@ -100,16 +102,17 @@ public class Profile {
 	public String getLogLevel() {
 		return logLevel;
 	}
-	
+
 	/**
-	 * Returns true when windows console mode is enabled.
-	 * Windows console mode disables the gui and prints status updates to the console
+	 * Returns true when windows console mode is enabled. Windows console mode
+	 * disables the gui and prints status updates to the console
+	 * 
 	 * @return
 	 */
-	public boolean isWindowsConsoleMode(){
+	public boolean isWindowsConsoleMode() {
 		return windowsConsoleMode;
 	}
-	
+
 	/**
 	 * Returns the map with settings for all filters
 	 * 
@@ -118,40 +121,70 @@ public class Profile {
 	public Map<String, String> getFilters() {
 		return filterConfig;
 	}
-	
+
 	/**
-	 * Returns true, if this profile is a user defined profile
-	 * This is used to ask the user for his desired options when the profile was created by ODAL
+	 * Returns true, if this profile is a user defined profile This is used to
+	 * ask the user for his desired options when the profile was created by ODAL
+	 * 
 	 * @return
 	 */
-	public boolean isUserProfile(){
+	public boolean isUserProfile() {
 		return userProfile;
 	}
-	
+
+	/**
+	 * Returns the URL of the open directory, null if not set
+	 * 
+	 * @return
+	 */
+	public String getUrl() {
+		return url;
+	}
+
 	/**
 	 * Sets the selectAll option to the given state
+	 * 
 	 * @param selectAll
 	 */
 	public void setSelectAll(boolean selectAll) {
 		this.selectAll = selectAll;
 	}
-	
+
 	/**
 	 * Sets the windowsConsoleMode option to the given state
+	 * 
 	 * @param windowsConsoleMode
 	 */
 	public void setWindowsConsoleMode(boolean windowsConsoleMode) {
 		this.windowsConsoleMode = windowsConsoleMode;
 	}
-	
+
 	/**
 	 * Sets the user profile option for this profile
+	 * 
 	 * @param state
 	 */
-	public void setUserProfile(boolean state){
+	public void setUserProfile(boolean state) {
 		userProfile = state;
 	}
+
+	/**
+	 * Sets the URL of the open directory
+	 * 
+	 * @param url
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
 	
+	/**
+	 * Sets the output directory to the given path
+	 * @param outputPath
+	 */
+	public void setOutputPath(String outputPath) {
+		this.outputPath = outputPath;
+	}
+
 	/**
 	 * Loads a profile from the ODAL directory
 	 * 
@@ -172,22 +205,23 @@ public class Profile {
 		bf.close();
 		return gson.fromJson(json, Profile.class);
 	}
-	
+
 	/**
 	 * Saves the given profile under the given name in the ODAL directory
-	 * @param name
-	 * @param p
+	 * 
+	 * @param name The name of the profile
+	 * @param p The profile
+	 * @throws IOException on write error
 	 */
-	public static void saveProfile(String name, Profile p) {
-		if(name == null || name.equals("")) System.out.println("Profile names may not be null or empty strings!");
-		if(p == null) System.out.println("Profiles may not be null!");
-		try {
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			BufferedWriter bf = new BufferedWriter(new FileWriter(name + ".odal"));
-			bf.write(gson.toJson(p));
-			bf.close();
-		} catch (IOException e) {
-			System.out.println("Unable to write the profile to disk: " + e.getMessage());
-		}
+	public static void saveProfile(String name, Profile p) throws IOException {
+		if (name == null || name.equals(""))
+			System.out.println("Profile names may not be null or empty strings!");
+		if (p == null)
+			System.out.println("Profiles may not be null!");
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		BufferedWriter bf = new BufferedWriter(new FileWriter(name + ".odal"));
+		bf.write(gson.toJson(p));
+		bf.close();
 	}
 }
