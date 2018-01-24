@@ -24,6 +24,7 @@ public class KeyWordFilter extends Filter{
 	
 	public KeyWordFilter() {
 		super("Keyword");
+		setSampleConfig("cake,recipe,!flour");
 	}
 
 	@Override
@@ -100,9 +101,9 @@ public class KeyWordFilter extends Filter{
 				}
 			});
 			
-			p.addComponent(new Label("Seperate filetypes by comma. For Example: pdf,mobi,epub"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
-			p.addComponent(new Label("A ! as first charcter selects all files that don't match the give types."), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
-			p.addComponent(new Label("Enter your filetypes:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("Seperate keywords by comma. For Example: cake,recipe,flour"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("A ! as first charcter of a keyword leads to the removal of files whose names contain the specific keyword."), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
+			p.addComponent(new Label("Enter your keywords:"), LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning));
 			p.addComponent(typeBox, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			p.addComponent(ready, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			setComponent(p);

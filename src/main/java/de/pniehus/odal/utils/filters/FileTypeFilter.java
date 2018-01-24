@@ -23,6 +23,7 @@ public class FileTypeFilter extends Filter{
 	
 	public FileTypeFilter() {
 		super("Filetype");
+		setSampleConfig("pdf,mobi,epub");
 	}
 
 	@Override

@@ -20,6 +20,7 @@ public class RegexFilter extends Filter{
 	private String filterBy = "[\\s\\S]*"; // Default = match anything
 	public RegexFilter() {
 		super("REGEX");
+		setSampleConfig(filterBy);
 	}
 
 	@Override

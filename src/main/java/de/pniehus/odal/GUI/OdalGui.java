@@ -31,7 +31,7 @@ public class OdalGui {
 	private File outputDir = null;
 	private String url = null;
 	private List<Filter> filters;
-	private static String version = "v0.0.3";
+	public static final String version = "v0.1.0-SNAPSHOT";
 	private RemoteFile root;
 	private int nextFilter = 0;
 	private int totalFiles = 0;
@@ -130,6 +130,10 @@ public class OdalGui {
 		}
 	}
 	
+	private void printHelp(){
+		// TODO REMOVE
+	}
+	
 	/**
 	 * Determines which dialog needs to be shown based on the programs state
 	 */
@@ -222,36 +226,6 @@ public class OdalGui {
 			printHelp();
 			
 		}
-	}
-	
-	/**
-	 * Prints the help text and exits the programm
-	 */
-	private void printHelp(){
-		System.out.println("------ Open Directory Auto Loader " + version + " Help------\n");
-		System.out.println("ODAL is a software for downloading files or entire file structures from open directory listings.");
-		System.out.println("The files from the parsed open directories can be selected and filtered before the download starts.\n");
-		System.out.println("\nIMPORTANT INFORMATION ON CONSOLE USE FOR WINDOWS USERS:");
-		System.out.println("Starting the programm from the terminal automatically enables the options -silent and -a.");
-		System.out.println("It is also required to provide the -o and -url option.\n");
-		System.out.println("Commandline parameters:\n");
-		System.out.println("-o <path>\t\tThe path to the output directories, where the downloaded file structure is saved");
-		System.out.println("-url <url>\t\tThe url of the open directory which will be parsed and downloaded");
-		System.out.println("-f <filter> <params>\tEnables the selected filter with the given parameters. Can be used multiple times");
-		System.out.println("-silent\t\tPrevents the software from displaying progress information");
-		System.out.println("-noStructure\t\tMakes the software copy all files into the same direcotry instead of copying the structure from the source");
-		System.out.println("-a\t\tDownloads all files (except the ones removed by filters");
-		System.out.println("-noSub\t\tOnly parses files and ignores directories entirely");
-		System.out.println("/?\t\tDisplays this dialog");
-		System.out.println("-help\t\tDisplays this dialog");
-		System.out.println("--help\t\tDisplays this dialog");
-		System.out.println("\n\nFilters:\n");
-		for(Filter f : filters){
-			System.out.println(f.getName() +"-filter\n");
-			System.out.println(f.getHelpText());
-			System.out.println("\n");
-		}
-		System.exit(1);
 	}
 	
 	/**

@@ -10,6 +10,7 @@ public abstract class Filter {
 	
 	private String name;
 	private boolean enabled;
+	private String sampleConfig = "No sample configuration defined!";
 	
 	/**
 	 * Constructor for Filter objects
@@ -103,5 +104,21 @@ public abstract class Filter {
 	 */
 	public String toString(){
 		return name;
+	}
+	
+	/**
+	 * Sets the Sample Configuration to the given String
+	 * @param c
+	 */
+	public void setSampleConfig(String c){
+		sampleConfig = c;
+	}
+	
+	/**
+	 * Returns a sample configuration string for use in profiles
+	 * @return
+	 */
+	public String getSampleConfig(){
+		return sampleConfig;
 	}
 }

@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This is a list box implementation where each item has its own checked state that can be toggled on and off
- * @author Martin
+ * @author Phil Niehus
  */
 public class ODALCheckBoxList<V> extends AbstractListBox<V, ODALCheckBoxList<V>> {
     /**

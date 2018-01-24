@@ -23,6 +23,7 @@ public class BlacklistFilter extends Filter{
 	
 	public BlacklistFilter() {
 		super("Blacklist");
+		setSampleConfig("car,house,tree");
 	}
 
 	@Override
