@@ -54,7 +54,7 @@ public class Profile {
 	 * 
 	 * @return
 	 */
-	public boolean isSilent() {
+	public boolean isSilent() { // TODO : Implement in OdalGui
 		return silent;
 	}
 
@@ -90,7 +90,7 @@ public class Profile {
 	 * 
 	 * @return
 	 */
-	public boolean isLogging() {
+	public boolean isLogging() { // TODO: Implement in OdalGui
 		return logging;
 	}
 
@@ -99,7 +99,7 @@ public class Profile {
 	 * 
 	 * @return
 	 */
-	public String getLogLevel() {
+	public String getLogLevel() { // TODO: Implement in OdalGui
 		return logLevel;
 	}
 
@@ -140,7 +140,7 @@ public class Profile {
 	public String getUrl() {
 		return url;
 	}
-
+	
 	/**
 	 * Sets the selectAll option to the given state
 	 * 
@@ -149,7 +149,23 @@ public class Profile {
 	public void setSelectAll(boolean selectAll) {
 		this.selectAll = selectAll;
 	}
-
+	
+	/**
+	 * Sets the keepOriginalStructure option
+	 * @param keepOriginalStructure
+	 */
+	public void setKeepOriginalStructure(boolean keepOriginalStructure){
+		this.keepOriginalStructure = keepOriginalStructure;
+	}
+	
+	/**
+	 * Enables or disables subdirectory parsing
+	 * @param parseSubdirectories
+	 */
+	public void setParseSubDirectories(boolean parseSubdirectories){
+		this.parseSubdirectories = parseSubdirectories;
+	}
+	
 	/**
 	 * Sets the windowsConsoleMode option to the given state
 	 * 
@@ -184,7 +200,7 @@ public class Profile {
 	public void setOutputPath(String outputPath) {
 		this.outputPath = outputPath;
 	}
-
+	
 	/**
 	 * Loads a profile from the ODAL directory
 	 * 

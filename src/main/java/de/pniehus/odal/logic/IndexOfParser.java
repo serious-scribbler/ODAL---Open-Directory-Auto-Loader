@@ -154,7 +154,7 @@ public class IndexOfParser {
 					return true;
 				}
 			} catch (IOException e) {
-				// TODO handle?
+				// TODO // Log, debug
 			}
 		}
 		return false;

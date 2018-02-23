@@ -82,7 +82,7 @@ public class KeyWordFilter extends Filter{
 		}
 	}
 	
-	private class TypeSettings extends AbstractWindow{ // TODO modify for keyword filter, test filter
+	private class TypeSettings extends AbstractWindow{
 		
 		public TypeSettings(OdalGui o){
 			super("Keyword Filter - Settings");

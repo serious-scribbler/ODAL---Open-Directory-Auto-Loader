@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -18,146 +19,91 @@ import de.pniehus.odal.logic.IndexOfParser;
 import de.pniehus.odal.logic.RemoteFile;
 import de.pniehus.odal.logic.TaskController;
 import de.pniehus.odal.logic.TaskMonitor;
+import de.pniehus.odal.resources.Profile;
 import de.pniehus.odal.utils.*;
 import de.pniehus.odal.utils.ODALCheckBoxList.Listener;
 
 public class OdalGui {
 	
 	private MultiWindowTextGUI gui;
-	private boolean parseSubdirs = true;
-	private boolean skipFileSelection = false;
-	private boolean keepStructure = true;
-	private boolean silent = false;
-	private File outputDir = null;
-	private String url = null;
 	private List<Filter> filters;
 	public static final String version = "v0.1.1-SNAPSHOT";
 	private RemoteFile root;
 	private int nextFilter = 0;
 	private int totalFiles = 0;
 	boolean filesSelected = false;
-	private boolean  consoleWindows = false; // True when the programm is running in a windows terminal
+	private Profile profile;
 	/**
 	 * True = filters were already selected (used for automated screen selection)
 	 */
 	private boolean filtersSet = false;
 	
-	public OdalGui(String[] args, List<Filter> filters) throws IOException{
+	
+	/**
+	 * Creates a new instance of OdalGui with the given profile as configuration
+	 * @param profile The profile that is used for this instance of ODAL
+	 * @param filters All filters that should be accessible for application on File Structures
+	 * @throws IOException
+	 */
+	public OdalGui(Profile profile, List<Filter> filters) throws IOException{
 		this.filters = filters;
-		parseArgs(args);
+		this.profile = profile;
 		
-		if(consoleWindows){
-			System.out.println("Console Mode on Windows is not implemented yet!");
-			if(url == null){
-				System.out.println("No URL selected, exiting!");
-				System.err.println("No URL selected, exiting!");
-				System.exit(1);
-			}
-			if(outputDir == null){
-				System.out.println("No output directory selected, exiting!");
-				System.err.println("No output directory selected, exiting!");
-				System.exit(1);
-			}
-			return;
-		}
-		
-		Terminal terminal = new DefaultTerminalFactory().createTerminal();
-		Screen screen = new TerminalScreen(terminal);
-		screen.startScreen();
-		
-		gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLACK));
-		
-		gui.addWindowAndWait(new URLWindow());
 	}
 	
 	/**
-	 * Parses all arguments
-	 * @param args
+	 * Initializes the IO
+	 * @throws IOException when the creation of an interactive terminal UI fails
 	 */
-	private void parseArgs(String[] args){
-		// TODO fix
-		if((args.length > 0)){
-			if(System.getProperty("os.name").toLowerCase().contains("windows")){
-				consoleWindows = true;
-				skipFileSelection = true;
-				silent = true;
-			}
+	private void initIO() throws IOException{
+		if(!profile.isWindowsConsoleMode()){
+			Terminal terminal = new DefaultTerminalFactory().createTerminal();
+			Screen screen = new TerminalScreen(terminal);
+			screen.startScreen();
+			
+			gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLACK));
+			gui.addWindowAndWait(new URLWindow());
 		}
-		for(int i = 0; i < args.length; i++){
-			switch(args[i]){
-				case "-noSub":
-					parseSubdirs = false;
-					break;
-				case "-a":
-					skipFileSelection = true;
-					break;
-				case "-noStructure":
-					keepStructure = false;
-					break;
-				case "-silent":
-					silent = true;
-					break;
-				case "-o":
-					checkArgument(args, i);
-					outputDir = new File(args[i+1]);
-					if(!checkFile(outputDir)){
-						System.out.println("The selected output directory does not exist or is not writeable!");
-						System.exit(1);
-					}
-					i++;
-					break;
-				case "-url":
-					checkArgument(args, i);
-					url = args[i+1];
-					i++;
-					break;
-				case "-f":
-					checkArgument(args, i);
-					checkArgument(args, i+1); // Checks for the existence of params
-					// TODO call setUp-method and enable filter
-					filtersSet = true;
-					i = i + 2;
-				case "/?":
-					printHelp();
-				case "-help":
-					printHelp();
-				case "--help":
-					printHelp();
-				default:
-					System.out.println("Invalid arguments!");
-					printHelp();
-			}
-		}
-	}
-	
-	private void printHelp(){
-		// TODO REMOVE
+		
+		// TODO: Init Windows Console IO (if necessary)
 	}
 	
 	/**
 	 * Determines which dialog needs to be shown based on the programs state
 	 */
-	public void determineNextWindow(){
-		if(url == null){
+	public void determineNextWindow(){ // TODO implement windows console mode
+		// TODO prepare using profile
+		if(profile.getUrl() == null){
 			URLWindow w = new URLWindow();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
-		} else if(outputDir == null){
+		} else if(profile.getOutputPath() == null){
 			OutputSelector w = new OutputSelector();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
 		} else if(!filtersSet){
-			if(filters.size() == 0){
-				filtersSet = true;
-				determineNextWindow();
-				return;
-			}
 			filtersSet = true;
-			FilterSelector sel = new FilterSelector();
-			gui.addWindow(sel);
-			gui.setActiveWindow(sel);
-		} else if(!skipFileSelection && !filesSelected){
-			// TODO write console version
+			if(profile.isUserProfile()){
+				if(profile.getFilters().size() == 0){
+					filtersSet = true;
+					determineNextWindow();
+					return;
+				} else{
+					filtersSet = true;
+					// TODO: Fix, Select Filters before setting them up
+				}
+			} else{
+				if(profile.isWindowsConsoleMode()){
+					// TODO: don't set up filters
+				} else{
+					FilterSelector sel = new FilterSelector();
+					gui.addWindow(sel);
+					gui.setActiveWindow(sel);
+				}
+			}
+			
+		} else if(!profile.isSelectAll() && !filesSelected){
+			// TODO apply filters beforehand
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
@@ -173,11 +119,11 @@ public class OdalGui {
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else{
+			// TODO seperate from ui, create new monitor for windows console & respect silent mode
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
-			
-			TaskController ctrl = new TaskController("Download", keepStructure, root, outputDir);
+			TaskController ctrl = new TaskController("Download", profile.isKeepOriginalStructure(), root, new File(profile.getOutputPath()));
 			ctrl.addMonitor(b);
 			totalFiles = ctrl.getNumberOfFiles();
 			if(totalFiles == 0){
@@ -216,19 +162,6 @@ public class OdalGui {
 	}
 	
 	/**
-	 * Exits the programm if i is the last argument or i is followed by an argument that starts with -
-	 * @param args
-	 * @param i
-	 */
-	private void checkArgument(String[] args, int i){
-		if((i == args.length - 1) || args[i+1].startsWith("-")){
-			System.out.println("ERROR: INVALID ARGUMENTS!");
-			printHelp();
-			
-		}
-	}
-	
-	/**
 	 * Returns true, if the given directory is a writable directory, otherwise false
 	 * @param f The directory to check for writability
 	 * @return
@@ -251,7 +184,7 @@ public class OdalGui {
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
 			final Label l = new Label("Enter your URL:");
 			final OdalTextBox urlBox = new OdalTextBox(new TerminalSize(gui.getScreen().getTerminalSize().getColumns()-2, 1), TextBox.Style.SINGLE_LINE);
-			if(url != null) urlBox.setText(url);
+			if(profile.getUrl() != null) urlBox.setText(profile.getUrl());
 			final CheckBox subdirs = new CheckBox("Parse subdirectories");
 			final CheckBox structure = new CheckBox("Keep original file structure");
 			final AbstractWindow self = this; // Used to re-enable the window when errors occur
@@ -264,11 +197,11 @@ public class OdalGui {
 						gui.addWindow(b);
 						gui.setActiveWindow(b);
 						gui.updateScreen();
-						parseSubdirs = subdirs.isChecked();
-						keepStructure = structure.isChecked();
-						url = urlBox.getText();
+						profile.setParseSubDirectories(subdirs.isChecked());
+						profile.setKeepOriginalStructure(structure.isChecked());
+						profile.setUrl(urlBox.getText());
 						IndexOfParser parser = new IndexOfParser(false);
-						root = parser.parseURL(url, parseSubdirs, "root");
+						root = parser.parseURL(profile.getUrl(), profile.isParseSubdirectories(), "root");
 						determineNextWindow();// Show file selection dialog
 					} catch (Exception e) {
 						gui.setActiveWindow(self);
@@ -293,7 +226,6 @@ public class OdalGui {
 	private class FileSelector extends AbstractWindow{
 		
 		private ODALCheckBoxList<RemoteFile> boxList;
-		private boolean changing = false;
 		
 		public FileSelector(RemoteFile root){
 			super("ODAL - File selector");
@@ -422,7 +354,7 @@ public class OdalGui {
 				public void run() {
 					File o = new File(path.getText());
 					if(checkFile(o)){
-						outputDir = o;
+						profile.setOutputPath(o.getAbsolutePath());
 						determineNextWindow();
 					} else{
 						MessageDialog.showMessageDialog(gui, "ERROR", "The selected path is invalid or not writable!");

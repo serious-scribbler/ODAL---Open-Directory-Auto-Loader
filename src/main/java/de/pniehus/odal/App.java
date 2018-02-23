@@ -45,7 +45,7 @@ public class App {
 		filters.add(new KeyWordFilter());
 		filters.add(new BlacklistFilter());
 		//@SuppressWarnings("unused")
-		parseArgs(args, filters);
+		Profile p = parseArgs(args, filters);
 		//OdalGui ogui = new OdalGui(args, filters);
 	}
 
@@ -134,7 +134,7 @@ public class App {
 				if(cmd.hasOption("url")){
 					profile.setUrl(cmd.getOptionValue("url"));
 				} else if(windowsConsole){
-					System.out.println("ERROR: The -url argument is required for consol use on windows systems.");
+					System.out.println("ERROR: The -url argument is required for console use on windows systems.");
 					printHelp(filters, options);
 					System.exit(1);
 				}
@@ -239,7 +239,7 @@ public class App {
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 		} catch (Exception e) {
-			// TODO Handle
+			// TODO Log, Exit
 		}
 	}
 }
