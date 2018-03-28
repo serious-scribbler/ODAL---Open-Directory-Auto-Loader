@@ -72,6 +72,18 @@ public class OdalGui {
 	 * Determines which dialog needs to be shown based on the programs state
 	 */
 	public void determineNextWindow(){ // TODO implement windows console mode
+		
+		if(profile.isWindowsConsoleMode()){
+			IndexOfParser parser = new IndexOfParser(false);
+			try {
+				root = parser.parseURL(profile.getUrl(), profile.isParseSubdirectories(), "root");
+				
+			} catch (IOException e) {
+				// TODO Kill ODAL
+				e.printStackTrace();
+			}
+			
+		}
 		// TODO prepare using profile
 		if(profile.getUrl() == null){
 			URLWindow w = new URLWindow();
