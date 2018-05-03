@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -48,7 +49,7 @@ public class OdalGui {
 	public OdalGui(Profile profile, List<Filter> filters) throws IOException{
 		this.filters = filters;
 		this.profile = profile;
-		
+		initIO();
 	}
 	
 	/**
@@ -72,7 +73,6 @@ public class OdalGui {
 	 * Determines which dialog needs to be shown based on the programs state
 	 */
 	public void determineNextWindow(){ // TODO implement windows console mode
-		
 		if(profile.isWindowsConsoleMode()){
 			IndexOfParser parser = new IndexOfParser(false);
 			try {
@@ -89,7 +89,7 @@ public class OdalGui {
 			URLWindow w = new URLWindow();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
-		} else if(profile.getOutputPath() == null){
+		} else if(profile.getOutputPath() == null || profile.getOutputPath().equals("")){
 			OutputSelector w = new OutputSelector();
 			gui.addWindow(w);
 			gui.setActiveWindow(w);
@@ -102,7 +102,7 @@ public class OdalGui {
 					return;
 				} else{
 					filtersSet = true;
-					// TODO: Fix, Select Filters before setting them up
+					// TODO: Fix, Select Filters before setting them up here
 				}
 			} else{
 				if(profile.isWindowsConsoleMode()){
@@ -131,7 +131,7 @@ public class OdalGui {
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else{
-			// TODO seperate from ui, create new monitor for windows console & respect silent mode
+			// TODO Now? seperate from ui, create new monitor for windows console & respect silent mode
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
@@ -163,6 +163,7 @@ public class OdalGui {
 					filterX++;
 				}
 			}
+			
 			if(run != null){
 				AbstractWindow w = run.getSettingUI(this);
 				gui.addWindow(w);
@@ -217,7 +218,12 @@ public class OdalGui {
 						determineNextWindow();// Show file selection dialog
 					} catch (Exception e) {
 						gui.setActiveWindow(self);
-						MessageDialog.showMessageDialog(gui, "ERROR", "The selected URL couldn't be parsed: \n" + e.getMessage());
+						String bla = "";
+						StackTraceElement[] st = e.getStackTrace(); // TODO: Remove
+						for(StackTraceElement emt : st) {
+							bla += emt.toString() + "\n";
+						}
+						MessageDialog.showMessageDialog(gui, "ERROR", "The selected URL couldn't be parsed: \n" + bla);
 					}
 				}
 			});
@@ -322,18 +328,20 @@ public class OdalGui {
 			Panel p = new Panel(new LinearLayout(Direction.VERTICAL));
 			p.addComponent(new Label("Select all filters you want to apply to the parsed directory structure:"));
 			
+			
 			filterList = new ODALCheckBoxList<Filter>();
 			for(Filter f : filters){
 				filterList.addItem(f);
 			}
 			Button b = new Button("Configure filters", new Runnable() {
-				
 				@Override
 				public void run() {
+					
 					List<Filter> selected = filterList.getCheckedItems();
 					for(Filter f : selected){
 						f.setEnabled(true); // Enables all selected filters
 					}
+					
 					configureNextFilter();
 				}
 			});

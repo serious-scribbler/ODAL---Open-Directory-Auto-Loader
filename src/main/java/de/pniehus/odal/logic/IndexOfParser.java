@@ -63,7 +63,7 @@ public class IndexOfParser {
 
 		Document doc = Jsoup.connect(url).get();
 		Elements links = doc.select("a[href]");
-
+//		doc = null; // TODO: try
 		for (Element link : links) {
 
 			String currentLink = link.attr("abs:href");

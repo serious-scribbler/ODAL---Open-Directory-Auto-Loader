@@ -17,12 +17,12 @@ import de.pniehus.odal.utils.OdalTextBox;
  * @author Phil Niehus
  *
  */
-public class KeyWordFilter extends Filter{
+public class KeywordFilter extends Filter{
 	
 	private List<String> exclude = new ArrayList<String>();
 	private List<String> include = new ArrayList<String>();
 	
-	public KeyWordFilter() {
+	public KeywordFilter() {
 		super("Keyword");
 		setSampleConfig("cake,recipe,!flour");
 	}
