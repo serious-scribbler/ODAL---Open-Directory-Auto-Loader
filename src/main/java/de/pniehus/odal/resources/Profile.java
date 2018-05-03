@@ -24,7 +24,7 @@ public class Profile {
 	private String outputPath = "";
 	private boolean silent = false;
 	private boolean keepOriginalStructure = true;
-	private boolean selectAll = true;
+	private boolean selectAll = false;
 	private boolean parseSubdirectories = true;
 	private boolean logging = false;
 	private transient boolean userProfile = false;
@@ -239,5 +239,14 @@ public class Profile {
 		BufferedWriter bf = new BufferedWriter(new FileWriter(name + ".odal"));
 		bf.write(gson.toJson(p));
 		bf.close();
+	}
+	
+	/**
+	 * Returns a JSON representation of this object as String
+	 */
+	@Override
+	public String toString() {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
 	}
 }
