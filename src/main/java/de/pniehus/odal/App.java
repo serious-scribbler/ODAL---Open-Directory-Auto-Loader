@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -29,6 +31,7 @@ import de.pniehus.odal.utils.filters.BlacklistFilter;
 import de.pniehus.odal.utils.filters.FileTypeFilter;
 import de.pniehus.odal.utils.filters.KeywordFilter;
 import de.pniehus.odal.utils.filters.RegexFilter;
+import de.pniehus.scribblerlib.logging.SimpleLoggingSetup;
 
 /**
  * Hello world!
@@ -36,11 +39,7 @@ import de.pniehus.odal.utils.filters.RegexFilter;
  */
 public class App {
 	
-	/**
-	 * The logger used for all logging in ODAL
-	 */
-	public static Logger logger;
-	
+	public static Logger mainLogger;
 	
 	public static void main(String[] args) throws IOException {
 		untrustedSSLSetup();
@@ -49,8 +48,27 @@ public class App {
 		filters.add(new FileTypeFilter());
 		filters.add(new KeywordFilter());
 		filters.add(new BlacklistFilter());
-		@SuppressWarnings("unused")
 		Profile p = parseArgs(args, filters);
+		
+		String fileName = "log-" + new Date().toString().replace(":", "-") + ".txt";
+		File logPath = new File(p.getLogDirectory() + fileName);
+		
+		if(!logPath.getParentFile().isDirectory() && !logPath.getParentFile().mkdirs()) {
+			logPath = new File(fileName);
+		}
+		
+		if(logPath.canWrite()) {
+			SimpleLoggingSetup.configureRootLogger(logPath.getAbsolutePath(), p.getLogLevel(), !p.isSilent());
+		} else {
+			System.out.println("Unable to create log: insufficient permissions!");
+			System.err.println("Unable to create log: insufficient permissions!");
+		}
+		
+		
+		mainLogger = Logger.getLogger(App.class.getCanonicalName());
+		mainLogger.info("Successfully intitialized ODAL");
+		if(!p.isLogging()) mainLogger.setLevel(Level.OFF);
+		
 		OdalGui ogui = new OdalGui(p, filters);
 	}
 

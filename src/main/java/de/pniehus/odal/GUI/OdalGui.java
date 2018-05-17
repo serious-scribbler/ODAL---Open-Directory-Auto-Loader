@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -39,6 +40,7 @@ public class OdalGui {
 	 */
 	private boolean filtersSet = false;
 	
+	private Logger guiLogger;
 	
 	/**
 	 * Creates a new instance of OdalGui with the given profile as configuration
@@ -66,21 +68,26 @@ public class OdalGui {
 			gui.addWindowAndWait(new URLWindow());
 		}
 		
-		// TODO: Init Windows Console IO (if necessary)
+		guiLogger = Logger.getLogger(this.getClass().getCanonicalName());
 	}
 	
 	/**
 	 * Determines which dialog needs to be shown based on the programs state
 	 */
-	public void determineNextWindow(){ // TODO implement windows console mode
+	public void determineNextWindow(){
+		
+		
 		if(profile.isWindowsConsoleMode()){
+			// TODO implement windows console mode
 			IndexOfParser parser = new IndexOfParser(false);
 			try {
+				guiLogger.info("Parsing '" + profile.getUrl() + "'...");
 				root = parser.parseURL(profile.getUrl(), profile.isParseSubdirectories(), "root");
+				guiLogger.finest("Parsing finnished");
 				
 			} catch (IOException e) {
-				// TODO Kill ODAL
-				e.printStackTrace();
+				guiLogger.severe("Unable to parse '" + profile.getUrl() + "' : " + e.getMessage() + " SHUTTING DOWN ODAL!");
+				System.exit(1);
 			}
 			
 		}
@@ -104,7 +111,7 @@ public class OdalGui {
 				}
 			} else{
 				if(profile.isWindowsConsoleMode()){
-					// TODO: don't set up filters
+					guiLogger.info("Filter selection is unavailable in windows console mode - skipping");
 				} else{
 					FilterSelector sel = new FilterSelector();
 					gui.addWindow(sel);
@@ -113,7 +120,7 @@ public class OdalGui {
 			}
 			
 		} else if(!profile.isSelectAll() && !filesSelected){
-			// TODO apply filters beforehand
+			// TODO apply filters beforehand, add 
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
@@ -137,7 +144,7 @@ public class OdalGui {
 			ctrl.addMonitor(b);
 			totalFiles = ctrl.getNumberOfFiles();
 			if(totalFiles == 0){
-				System.out.println("Nothing to download, exiting!");
+				guiLogger.info("Nothing to download, exiting!");
 				System.exit(0);
 			}
 			ctrl.start();
