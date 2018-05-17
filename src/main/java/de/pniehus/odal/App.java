@@ -5,8 +5,11 @@ import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -36,7 +39,11 @@ import de.pniehus.odal.utils.filters.RegexFilter;
  *
  */
 public class App {
-
+	
+	/**
+	 * The logger used for all logging in ODAL
+	 */
+	public static Logger logger;
 	public static void main(String[] args) throws IOException {
 		untrustedSSLSetup();
 		List<Filter> filters = new ArrayList<Filter>();
@@ -169,7 +176,6 @@ public class App {
 		String header = "\n---- Open Directory Auto Loader " + OdalGui.version + " ----\n";
 		if(System.getProperty("os.name").toLowerCase().contains("windows")) header += "\nIMPORTANT INFORMATION ON CONSOLE USE ON WINDOWS SYSTEMS:\nStarting the programm from the terminal requires the use of -p and -url and automatically enables -a.\n ";
 		
-		// TODO: Make this display optional
 		String footer = "\n\nFilter configuration:\n";
 		footer += "Profiles enable all filters with sample data by default,\nremove their corresponding configuration line from your profile to disable them\n";
 		for (Filter f : filters) {

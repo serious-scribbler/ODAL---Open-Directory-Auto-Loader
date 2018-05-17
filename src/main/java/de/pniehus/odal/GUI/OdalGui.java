@@ -84,7 +84,6 @@ public class OdalGui {
 			}
 			
 		}
-		// TODO prepare using profile
 		if(profile.getUrl() == null){
 			URLWindow w = new URLWindow();
 			gui.addWindow(w);
@@ -102,7 +101,6 @@ public class OdalGui {
 					return;
 				} else{
 					filtersSet = true;
-					// TODO: Fix, Select Filters before setting them up here
 				}
 			} else{
 				if(profile.isWindowsConsoleMode()){

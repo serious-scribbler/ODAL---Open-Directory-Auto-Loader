@@ -36,9 +36,9 @@ public class IndexOfParser {
 	}
 	
 	/**
-	 * Size fetching allows to see the total file size before the download is finnished
+	 * Size fetching allows to see the total file size before the download is finished
 	 * This is really time consuming (average 150-175ms) and therefore only recommended for directories
-	 * with a scmall amount of files
+	 * with a small amount of files
 	 * @param enableSizeFetching
 	 */
 	public void setSizeFetching(boolean b){
@@ -63,7 +63,6 @@ public class IndexOfParser {
 
 		Document doc = Jsoup.connect(url).get();
 		Elements links = doc.select("a[href]");
-//		doc = null; // TODO: try
 		for (Element link : links) {
 
 			String currentLink = link.attr("abs:href");
