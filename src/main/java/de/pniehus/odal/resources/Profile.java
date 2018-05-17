@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,10 +28,15 @@ public class Profile {
 	private boolean selectAll = false;
 	private boolean parseSubdirectories = true;
 	private boolean logging = false;
+	/**
+	 * This is set to true if the given profile was not generated automatically
+	 */
 	private transient boolean userProfile = false;
-	private String logLevel = "info";
+	private String logDirectory = "logs/";
+	private String logLevel = Level.INFO.toString();
 	private boolean windowsConsoleMode = false;
 	private transient String url;
+	
 
 	private Map<String, String> filterConfig = new HashMap<String, String>();
 
@@ -90,7 +96,7 @@ public class Profile {
 	 * 
 	 * @return
 	 */
-	public boolean isLogging() { // TODO: Implement in OdalGui
+	public boolean isLogging() {
 		return logging;
 	}
 
@@ -99,8 +105,34 @@ public class Profile {
 	 * 
 	 * @return
 	 */
-	public String getLogLevel() { // TODO: Implement in OdalGui
-		return logLevel;
+	public Level getLogLevel() {
+		
+		if(logLevel.equals(Level.ALL.toString())) {
+			
+		} else if(logLevel.equals(Level.CONFIG.toString())) {
+			return Level.CONFIG;
+		} else if(logLevel.equals(Level.FINE.toString())) {
+			return Level.FINE;
+		} else if(logLevel.equals(Level.FINER.toString())) {
+			return Level.FINER;
+		} else if(logLevel.equals(Level.FINEST.toString())) {
+			return Level.FINEST;
+		} else if(logLevel.equals(Level.OFF.toString())) {
+			return Level.OFF;
+		} else if(logLevel.equals(Level.SEVERE.toString())) {
+			return Level.SEVERE;
+		} else if(logLevel.equals(Level.WARNING.toString())) {
+			return Level.WARNING;
+		}
+		return Level.INFO;
+	}
+	
+	/**
+	 * Returns the directory that should be used for logging
+	 * @return
+	 */
+	public String getLogDirectory() {
+		return logDirectory;
 	}
 
 	/**

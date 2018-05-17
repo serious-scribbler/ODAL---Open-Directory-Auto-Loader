@@ -1,12 +1,9 @@
 package de.pniehus.odal;
 
-import java.awt.GraphicsEnvironment;
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,7 +21,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.google.gson.Gson;
 
 import de.pniehus.odal.GUI.OdalGui;
 import de.pniehus.odal.resources.Profile;
@@ -44,6 +40,8 @@ public class App {
 	 * The logger used for all logging in ODAL
 	 */
 	public static Logger logger;
+	
+	
 	public static void main(String[] args) throws IOException {
 		untrustedSSLSetup();
 		List<Filter> filters = new ArrayList<Filter>();
@@ -51,7 +49,7 @@ public class App {
 		filters.add(new FileTypeFilter());
 		filters.add(new KeywordFilter());
 		filters.add(new BlacklistFilter());
-		//@SuppressWarnings("unused")
+		@SuppressWarnings("unused")
 		Profile p = parseArgs(args, filters);
 		OdalGui ogui = new OdalGui(p, filters);
 	}
