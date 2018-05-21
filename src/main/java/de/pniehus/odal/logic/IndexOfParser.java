@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,6 +22,7 @@ public class IndexOfParser {
 	
 	private List<String> dirs = new ArrayList<String>();
 	public boolean enableSizeFetch = false;
+	private Logger logger;
 	
 	// TODO add error listener support
 	
@@ -32,7 +34,8 @@ public class IndexOfParser {
 	 */
 	public IndexOfParser(boolean enableSizeFetching){
 		setSizeFetching(enableSizeFetching);
-		 System.setProperty("http.agent", "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0");
+		logger = Logger.getLogger(this.getClass().getCanonicalName());
+		System.setProperty("http.agent", "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0");
 	}
 	
 	/**
@@ -108,7 +111,8 @@ public class IndexOfParser {
 				
 				tree.add(new RemoteFile(name, info, level+1));
 			} catch (IOException ioE) {
-				continue; // TODO maybe handle better
+				logger.warning("Unable to parse '" + currentLink + "': " + ioE.getMessage());
+				continue;
 			}
 
 		}
@@ -153,7 +157,7 @@ public class IndexOfParser {
 					return true;
 				}
 			} catch (IOException e) {
-				// TODO // Log, debug
+				logger.warning("Unable to obtain information for '" + link + "': " + e.getMessage());
 			}
 		}
 		return false;
