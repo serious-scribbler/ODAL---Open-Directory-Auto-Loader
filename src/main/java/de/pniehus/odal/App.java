@@ -42,7 +42,6 @@ public class App {
 	public static Logger mainLogger;
 	
 	public static void main(String[] args) throws IOException {
-		untrustedSSLSetup();
 		List<Filter> filters = new ArrayList<Filter>();
 		filters.add(new RegexFilter());
 		filters.add(new FileTypeFilter());
@@ -66,6 +65,7 @@ public class App {
 		
 		
 		mainLogger = Logger.getLogger(App.class.getCanonicalName());
+		untrustedSSLSetup();
 		mainLogger.info("Successfully intitialized ODAL");
 		if(!p.isLogging()) mainLogger.setLevel(Level.OFF);
 		
@@ -261,7 +261,7 @@ public class App {
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 		} catch (Exception e) {
-			// TODO Log, Exit
+			mainLogger.severe("Unable to setup support for unverified SSL certificates: " + e.getMessage());
 		}
 	}
 }

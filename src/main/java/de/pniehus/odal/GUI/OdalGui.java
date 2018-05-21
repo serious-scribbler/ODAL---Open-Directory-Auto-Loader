@@ -35,6 +35,7 @@ public class OdalGui {
 	private int totalFiles = 0;
 	boolean filesSelected = false;
 	private Profile profile;
+	
 	/**
 	 * True = filters were already selected (used for automated screen selection)
 	 */
