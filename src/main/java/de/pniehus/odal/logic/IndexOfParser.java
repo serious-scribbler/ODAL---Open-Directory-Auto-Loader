@@ -24,7 +24,6 @@ public class IndexOfParser {
 	public boolean enableSizeFetch = false;
 	private Logger logger;
 	
-	// TODO add error listener support
 	
 	/**
 	 * Size fetching allows to see the total file size before the download is finished

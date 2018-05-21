@@ -3,6 +3,7 @@ package de.pniehus.odal.logic;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.tree.TreeNode;
 
@@ -24,7 +25,7 @@ public class TaskController {
 	private long sizeLeft;
 	private int filesLeft;
 	
-	// TODO Add ErrorListenerSupport
+	// TODO log errors
 	
 	private RemoteFile files;
 	private File outputDirectory;
@@ -32,6 +33,7 @@ public class TaskController {
 	private List<TaskMonitor> monitors = new ArrayList<TaskMonitor>();
 
 	private Task t;
+	private Logger logger;
 	
 	/**
 	 * Creates and manages a task controller for a download with the following params
@@ -47,6 +49,7 @@ public class TaskController {
 		if(outputDirectory.isFile() || !outputDirectory.canWrite()){
 			throw new IllegalArgumentException("Output directory invalid or not writeable");
 		}
+		logger = Logger.getLogger(this.getClass().getCanonicalName());
 		this.outputDirectory = outputDirectory;
 		this.name = name;
 		this.keepStructure = keepStructure;
@@ -166,6 +169,7 @@ public class TaskController {
 	 * @param message
 	 */
 	public void errorDetected(String message){
+		logger.info(message);
 		for(TaskMonitor monitor : monitors){
 			monitor.errorOccured(message);
 		}

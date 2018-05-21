@@ -224,12 +224,14 @@ public class OdalGui {
 						determineNextWindow();// Show file selection dialog
 					} catch (Exception e) {
 						gui.setActiveWindow(self);
-						String bla = "";
-						StackTraceElement[] st = e.getStackTrace(); // TODO: Remove
-						for(StackTraceElement emt : st) {
-							bla += emt.toString() + "\n";
+						String error = "";
+						StackTraceElement[] stacktrace = e.getStackTrace();
+						for(StackTraceElement emt : stacktrace) {
+							error += emt.toString() + "\n";
 						}
-						MessageDialog.showMessageDialog(gui, "ERROR", "The selected URL couldn't be parsed: \n" + bla);
+						Logger l = Logger.getLogger(this.getClass().getCanonicalName());
+						l.severe("Unable to parse the URL '" + profile.getUrl() + "': " + error);
+						MessageDialog.showMessageDialog(gui, "ERROR", "The selected URL couldn't be parsed: \n" + error);
 					}
 				}
 			});
@@ -428,7 +430,7 @@ public class OdalGui {
 
 		@Override
 		public void errorOccured(String errorMessage) {
-			System.out.println("ERROR: " + errorMessage);
+			// TODO: display in gui
 		}
 
 		@Override
