@@ -7,6 +7,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +34,8 @@ import de.pniehus.odal.utils.filters.BlacklistFilter;
 import de.pniehus.odal.utils.filters.FileTypeFilter;
 import de.pniehus.odal.utils.filters.KeywordFilter;
 import de.pniehus.odal.utils.filters.RegexFilter;
+import de.pniehus.scribblerlib.logging.ConsolePrintLogHandler;
+import de.pniehus.scribblerlib.logging.ScribblerLogFormat;
 import de.pniehus.scribblerlib.logging.SimpleLoggingSetup;
 
 /**
@@ -59,8 +64,19 @@ public class App {
 		if(logPath.canWrite()) {
 			SimpleLoggingSetup.configureRootLogger(logPath.getAbsolutePath(), p.getLogLevel(), !p.isSilent());
 		} else {
+			Logger root = Logger.getLogger("");
+			
+			for(Handler h : root.getHandlers()) { // Removing default console handlers
+				if(h instanceof ConsoleHandler) {
+					root.removeHandler(h);
+				}
+			}
+			
+			ConsolePrintLogHandler cplh = new ConsolePrintLogHandler();
+			cplh.setFormatter(new ScribblerLogFormat(SimpleLoggingSetup.DEFAULT_DATE_FORMAT));
+			root.addHandler(cplh);
+			
 			System.out.println("Unable to create log: insufficient permissions!");
-			System.err.println("Unable to create log: insufficient permissions!");
 		}
 		
 		
@@ -68,7 +84,16 @@ public class App {
 		untrustedSSLSetup();
 		mainLogger.info("Successfully intitialized ODAL");
 		if(!p.isLogging()) mainLogger.setLevel(Level.OFF);
-		
+		if(p.isWindowsConsoleMode() && !p.isLogging()) {
+			Logger root = Logger.getLogger("");
+			for(Handler h : root.getHandlers()) {
+				if(h instanceof FileHandler) {
+					root.removeHandler(h); // Removes FileHandler to allow console output through logging
+				}
+			}
+			mainLogger.setLevel(p.getLogLevel());
+		}
+		mainLogger.info("Test");
 		OdalGui ogui = new OdalGui(p, filters);
 	}
 
@@ -101,7 +126,7 @@ public class App {
 		options.addOption(Option.builder("url").hasArg().argName("url").desc("Sets the url of the open directory which will be parsed and downloaded").build());
 		options.addOption(Option.builder("a").longOpt("select-all").desc("Downloads all available files (except the ones removed by filters), overrules the corresponding setting if a profile is used").build());
 		options.addOption(Option.builder("o").longOpt("outputDir").hasArg().argName("directory path").desc("Sets the output directory to the given directory, overrules the corresponding setting if a profile is used").build());
-		
+		options.addOption(Option.builder("w").longOpt("windows-mode").desc("Enables the windows console mode on non-windows systems. Requires -url and -p to be used.").build());
 		Option helpOption = Option.builder("h").longOpt("help").desc("Displays this help dialog").build();
 		
 		helpOptions.addOption(helpOption);
@@ -112,8 +137,17 @@ public class App {
 		try {
 			CommandLine cmd = cliParser.parse(helpOptions, args, true);
 			
+			
 			if(cmd.getOptions().length == 0){
 				cmd = cliParser.parse(options, args);
+				
+				if(cmd.hasOption("w")) {
+					windowsConsole = true;
+					if(!cmd.hasOption("p")) {
+						System.out.println("ERROR: The profile option is required for windows mode!");
+						printHelp(filters, options);
+					}
+				}
 				
 				if(cmd.hasOption("p")){
 					String profileName = cmd.getOptionValue("p");
