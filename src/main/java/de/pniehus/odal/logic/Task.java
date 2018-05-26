@@ -70,7 +70,7 @@ public class Task implements Runnable{
 			} catch (IOException e) {
 				ctrl.errorDetected("Unable to download: '" + file.getFileInfo().getURL() + "':\n" + e.getMessage() + "\nThe file has been removed!");
 			} finally{
-				ctrl.fileFinnished(file.getFileInfo().getSize());
+				ctrl.fileFinnished(file.getFileInfo().getSize(), file.getFileInfo().getURL());
 				file.removeFromParent();
 			}
 		}

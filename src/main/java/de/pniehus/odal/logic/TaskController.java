@@ -151,15 +151,16 @@ public class TaskController {
 	 * successfully downloaded
 	 * 
 	 * @param size
+	 * @param url The url of the file that has been successfully downloaded
 	 */
-	public void fileFinnished(long size) {
+	public void fileFinnished(long size, String url) {
 		sizeLeft -= size;
 		filesLeft--;
 		for (TaskMonitor monitor : monitors) {
 			monitor.taskUpdated(sizeLeft, filesLeft,
 					((t.isRunning) ? timeElapsed
 							+ (System.currentTimeMillis() - started)
-							: timeElapsed));
+							: timeElapsed), "Finnished downloading " + url);
 		}
 		// backup task
 	}
