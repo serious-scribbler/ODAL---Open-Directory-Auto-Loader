@@ -86,6 +86,37 @@ public class OdalGui {
 				root = parser.parseURL(profile.getUrl(), profile.isParseSubdirectories(), "root");
 				guiLogger.finest("Parsing finnished");
 				
+				if(profile.isUserProfile()) {
+					if(profile.getFilters().size() == 0) {
+						guiLogger.info("No filters provided, skipping filter setup");
+					} else {
+						// TODO: set up filters
+					}
+					
+					for(Filter f : filters){ // Apply filters
+						if(f.isEnabled()){
+							guiLogger.info("Applying " + f.getName() + "-FILTER...");
+							f.filter(root);
+						}
+					}
+					
+				}
+				TaskController ctrl = new TaskController("Download", profile.isKeepOriginalStructure(), root, new File(profile.getOutputPath()));
+				
+				totalFiles = ctrl.getNumberOfFiles();
+				ctrl.addMonitor(new TaskMonitor() {
+					
+					@Override
+					public void errorOccured(String errorMessage) {
+						Logger.getLogger(this.getClass().getCanonicalName()).warning(errorMessage);						
+					}
+					
+					@Override
+					public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed, String description) {
+						Logger.getLogger(this.getClass().getCanonicalName()).info(description + " - " + filesLeft + " of " + totalFiles + "left.");						
+					}
+				});
+				// TODO continue here
 			} catch (IOException e) {
 				guiLogger.severe("Unable to parse '" + profile.getUrl() + "' : " + e.getMessage() + " SHUTTING DOWN ODAL!");
 				System.exit(1);
@@ -111,13 +142,9 @@ public class OdalGui {
 					filtersSet = true;
 				}
 			} else{
-				if(profile.isWindowsConsoleMode()){
-					guiLogger.info("Filter selection is unavailable in windows console mode - skipping");
-				} else{
-					FilterSelector sel = new FilterSelector();
-					gui.addWindow(sel);
-					gui.setActiveWindow(sel);
-				}
+				FilterSelector sel = new FilterSelector();
+				gui.addWindow(sel);
+				gui.setActiveWindow(sel);
 			}
 			
 		} else if(!profile.isSelectAll() && !filesSelected){
@@ -137,7 +164,7 @@ public class OdalGui {
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else{
-			// TODO Now? seperate from ui, create new monitor for windows console & respect silent mode
+			// TODO: seperate from ui, respect silent mode, log
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
@@ -431,10 +458,13 @@ public class OdalGui {
 		@Override
 		public void errorOccured(String errorMessage) {
 			// TODO: display in gui
+			// TODO: Log
 		}
 
 		@Override
-		public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed) {
+		public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed, String description) {
+			// TODO: include description
+			// TODO : log
 			taskInfo.setText("Downloaded " + (totalFiles - filesLeft) + " of " + totalFiles);		
 			if(filesLeft == 0){
 				System.out.println("Download finnished!");
