@@ -93,7 +93,7 @@ public class App {
 			}
 			mainLogger.setLevel(p.getLogLevel());
 		}
-		mainLogger.info("Test");
+		// TODO: Reading log levels from config doesn't seem to work
 		OdalGui ogui = new OdalGui(p, filters);
 	}
 

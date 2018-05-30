@@ -68,6 +68,7 @@ public class IndexOfParser {
 		for (Element link : links) {
 
 			String currentLink = link.attr("abs:href");
+			logger.info("Checking link: " + currentLink);
 			if(currentLink.contains("?") || !currentLink.contains(url)) continue;
 			
 			String name = getResourceName(currentLink);

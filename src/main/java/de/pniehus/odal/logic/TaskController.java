@@ -25,7 +25,6 @@ public class TaskController {
 	private long sizeLeft;
 	private int filesLeft;
 	
-	// TODO log errors
 	
 	private RemoteFile files;
 	private File outputDirectory;
@@ -170,7 +169,7 @@ public class TaskController {
 	 * @param message
 	 */
 	public void errorDetected(String message){
-		logger.info(message);
+		logger.warning(message);
 		for(TaskMonitor monitor : monitors){
 			monitor.errorOccured(message);
 		}

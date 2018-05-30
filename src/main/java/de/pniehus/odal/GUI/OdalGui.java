@@ -53,6 +53,7 @@ public class OdalGui {
 		this.filters = filters;
 		this.profile = profile;
 		initIO();
+		determineNextWindow();
 	}
 	
 	/**
@@ -78,19 +79,25 @@ public class OdalGui {
 	public void determineNextWindow(){
 		
 		
-		if(profile.isWindowsConsoleMode()){
-			// TODO implement windows console mode
+		if(profile.isWindowsConsoleMode()){ // TODO exclude into additionl method, test functionality
 			IndexOfParser parser = new IndexOfParser(false);
 			try {
 				guiLogger.info("Parsing '" + profile.getUrl() + "'...");
 				root = parser.parseURL(profile.getUrl(), profile.isParseSubdirectories(), "root");
-				guiLogger.finest("Parsing finnished");
+				guiLogger.info("Parsing finnished");
 				
 				if(profile.isUserProfile()) {
 					if(profile.getFilters().size() == 0) {
 						guiLogger.info("No filters provided, skipping filter setup");
 					} else {
-						// TODO: set up filters
+						for(Entry<String, String> filterConfig : profile.getFilters().entrySet()) {
+							for(Filter f : filters) {
+								if(f.getName().equals(filterConfig.getKey())) {
+									f.setUp(filterConfig.getValue());
+									f.setEnabled(true); // TODO: TEST
+								}
+							}
+						}
 					}
 					
 					for(Filter f : filters){ // Apply filters
@@ -116,7 +123,13 @@ public class OdalGui {
 						Logger.getLogger(this.getClass().getCanonicalName()).info(description + " - " + filesLeft + " of " + totalFiles + "left.");						
 					}
 				});
-				// TODO continue here
+				guiLogger.finest("Finnished TaskController set up");
+				guiLogger.finest("Starting download...");
+				if(ctrl.getNumberOfFiles() <= 0) {
+					guiLogger.info("Nothing to download, exiting");
+					System.exit(0); 
+				}
+				ctrl.start();
 			} catch (IOException e) {
 				guiLogger.severe("Unable to parse '" + profile.getUrl() + "' : " + e.getMessage() + " SHUTTING DOWN ODAL!");
 				System.exit(1);
@@ -432,6 +445,7 @@ public class OdalGui {
 	private class BusyWindow extends AbstractWindow implements TaskMonitor{
 		
 		private Label taskInfo;
+		private Logger executionLogger;
 		
 		/**
 		 * Creates a BusyWindow
@@ -444,6 +458,9 @@ public class OdalGui {
 			taskInfo = new Label("");
 			p.addComponent(new Label(text));
 			p.addComponent(taskInfo);
+			
+			executionLogger = Logger.getLogger(this.getClass().getCanonicalName());
+			
 			setComponent(p);
 		}
 		
@@ -457,17 +474,16 @@ public class OdalGui {
 
 		@Override
 		public void errorOccured(String errorMessage) {
-			// TODO: display in gui
-			// TODO: Log
+			taskInfo.setText("ERROR: " + errorMessage + "\n" + taskInfo.getText());
 		}
 
 		@Override
 		public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed, String description) {
-			// TODO: include description
-			// TODO : log
-			taskInfo.setText("Downloaded " + (totalFiles - filesLeft) + " of " + totalFiles);		
+			executionLogger.info(description);
+			taskInfo.setText(description + "\nDownloaded " + (totalFiles - filesLeft) + " of " + totalFiles);		
 			if(filesLeft == 0){
 				System.out.println("Download finnished!");
+				executionLogger.finest("Download finnished!");
 				System.exit(0);
 			}
 		}
