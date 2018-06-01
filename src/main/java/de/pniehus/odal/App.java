@@ -83,12 +83,6 @@ public class App {
 		
 		Logger.getLogger("").setLevel(p.getLogLevel());
 		mainLogger = Logger.getLogger(App.class.getCanonicalName());
-		mainLogger.config("CONFIG");
-		mainLogger.finest("FINEST");
-		mainLogger.finer("FINER");
-		mainLogger.fine("FINE");
-		mainLogger.warning("WARNING");
-		mainLogger.severe("SEVERE");
 		untrustedSSLSetup();
 		mainLogger.info("Successfully intitialized ODAL");
 		if(!p.isLogging()) mainLogger.setLevel(Level.OFF);
