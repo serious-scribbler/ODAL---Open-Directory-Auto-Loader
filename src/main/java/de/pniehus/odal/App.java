@@ -55,13 +55,14 @@ public class App {
 		Profile p = parseArgs(args, filters);
 		
 		String fileName = "log-" + new Date().toString().replace(":", "-") + ".txt";
+		fileName = fileName.replace(" ", "-");
 		File logPath = new File(p.getLogDirectory() + fileName);
 		
 		if(!logPath.getParentFile().isDirectory() && !logPath.getParentFile().mkdirs()) {
 			logPath = new File(fileName);
 		}
 		
-		if(logPath.canWrite()) {
+		if(logPath.getParentFile().canWrite() || logPath.getParentFile().setWritable(true)) {
 			SimpleLoggingSetup.configureRootLogger(logPath.getAbsolutePath(), p.getLogLevel(), !p.isSilent());
 		} else {
 			Logger root = Logger.getLogger("");
@@ -77,10 +78,17 @@ public class App {
 			root.addHandler(cplh);
 			
 			System.out.println("Unable to create log: insufficient permissions!");
+			
 		}
 		
-		
+		Logger.getLogger("").setLevel(p.getLogLevel());
 		mainLogger = Logger.getLogger(App.class.getCanonicalName());
+		mainLogger.config("CONFIG");
+		mainLogger.finest("FINEST");
+		mainLogger.finer("FINER");
+		mainLogger.fine("FINE");
+		mainLogger.warning("WARNING");
+		mainLogger.severe("SEVERE");
 		untrustedSSLSetup();
 		mainLogger.info("Successfully intitialized ODAL");
 		if(!p.isLogging()) mainLogger.setLevel(Level.OFF);
@@ -91,7 +99,6 @@ public class App {
 					root.removeHandler(h); // Removes FileHandler to allow console output through logging
 				}
 			}
-			mainLogger.setLevel(p.getLogLevel());
 		}
 		// TODO: Reading log levels from config doesn't seem to work
 		OdalGui ogui = new OdalGui(p, filters);
