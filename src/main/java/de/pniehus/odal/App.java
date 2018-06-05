@@ -94,11 +94,10 @@ public class App {
 				}
 			}
 		}
-		// TODO: Reading log levels from config doesn't seem to work
 		OdalGui ogui = new OdalGui(p, filters);
 	}
 
-	/**
+	/**S
 	 * Parses the command line arguments
 	 * 
 	 * @param args

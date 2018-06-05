@@ -60,7 +60,7 @@ public class Profile {
 	 * 
 	 * @return
 	 */
-	public boolean isSilent() { // TODO : Implement in OdalGui
+	public boolean isSilent() {
 		return silent;
 	}
 

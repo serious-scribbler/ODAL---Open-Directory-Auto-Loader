@@ -177,7 +177,6 @@ public class OdalGui {
 			gui.addWindow(sel);
 			gui.setActiveWindow(sel);
 		} else{
-			// TODO: seperate from ui, respect silent mode, log
 			BusyWindow b = new BusyWindow("Processing task...");
 			gui.addWindow(b);
 			gui.setActiveWindow(b);
