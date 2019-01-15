@@ -83,7 +83,7 @@ public class IndexOfParser {
 							if(dirs.contains(currentLink)) continue;
 							dirs.add(currentLink);
 							RemoteFile sub = parse(currentLink, true, name, level+1);
-							if (sub != null && sub.isDirectory())
+							if (sub != null && !sub.isLeaf())
 								tree.add(sub);
 						}
 						continue;
@@ -98,7 +98,7 @@ public class IndexOfParser {
 								if(dirs.contains(currentLink)) continue;
 								dirs.add(currentLink);
 								RemoteFile sub = parse(currentLink, true, name, level+1);
-								if (sub != null && sub.isDirectory())
+								if (sub != null && !sub.isLeaf())
 									tree.add(sub);
 							}
 						}

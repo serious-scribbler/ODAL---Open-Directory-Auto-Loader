@@ -35,6 +35,7 @@ public class OdalGui {
 	private int totalFiles = 0;
 	boolean filesSelected = false;
 	private Profile profile;
+	private boolean windowsModeOpen = false;
 	
 	/**
 	 * True = filters were already selected (used for automated screen selection)
@@ -78,14 +79,26 @@ public class OdalGui {
 	 */
 	public void determineNextWindow(){
 		
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		guiLogger.config("deterMineNextWindow called, StackTrace:");
+		for(StackTraceElement elm : stackTraceElements) {
+			guiLogger.config(elm.toString());
+		}
 		
 		if(profile.isWindowsConsoleMode()){ // TODO exclude into additionl method, test functionality
+			if(windowsModeOpen) {
+				return;
+			} else {
+				windowsModeOpen = true;
+			}
+			
+			guiLogger.config("WindowsConsoleMode launched");
 			IndexOfParser parser = new IndexOfParser(false);
 			try {
 				guiLogger.info("Parsing '" + profile.getUrl() + "'...");
 				root = parser.parseURL(profile.getUrl(), profile.isParseSubdirectories(), "root");
 				guiLogger.info("Parsing finnished");
-				
+				guiLogger.info("Found " + RemoteFile.countFiles(root) + " files");
 				if(profile.isUserProfile()) {
 					if(profile.getFilters().size() == 0) {
 						guiLogger.info("No filters provided, skipping filter setup");
@@ -115,12 +128,12 @@ public class OdalGui {
 					
 					@Override
 					public void errorOccured(String errorMessage) {
-						Logger.getLogger(this.getClass().getCanonicalName()).warning(errorMessage);						
+						Logger.getLogger(TaskController.class.getCanonicalName()).warning(errorMessage);						
 					}
 					
 					@Override
 					public void taskUpdated(long sizeLeft, int filesLeft, long timeElapsed, String description) {
-						Logger.getLogger(this.getClass().getCanonicalName()).info(description + " - " + filesLeft + " of " + totalFiles + "left.");						
+						Logger.getLogger(TaskController.class.getCanonicalName()).info(description + " - " + filesLeft + " of " + totalFiles + "left.");						
 					}
 				});
 				guiLogger.finest("Finnished TaskController set up");
@@ -134,7 +147,7 @@ public class OdalGui {
 				guiLogger.severe("Unable to parse '" + profile.getUrl() + "' : " + e.getMessage() + " SHUTTING DOWN ODAL!");
 				System.exit(1);
 			}
-			
+			return;
 		}
 		if(profile.getUrl() == null){
 			URLWindow w = new URLWindow();
@@ -146,7 +159,7 @@ public class OdalGui {
 			gui.setActiveWindow(w);
 		} else if(!filtersSet){
 			filtersSet = true;
-			if(profile.isUserProfile()){
+			if(profile.isUserProfile()){ //Dont call
 				if(profile.getFilters().size() == 0){
 					filtersSet = true;
 					determineNextWindow();

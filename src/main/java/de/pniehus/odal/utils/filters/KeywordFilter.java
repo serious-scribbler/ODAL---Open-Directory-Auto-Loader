@@ -3,6 +3,7 @@ package de.pniehus.odal.utils.filters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.*;
@@ -50,15 +51,18 @@ public class KeywordFilter extends Filter{
 		for(String s : exclude){
 			if(fileName.contains(s)){
 				filetree.removeFromParent();
+				Logger.getLogger("KeywordFilter").finest(fileName + " was removed (blacklist)!");
 				return true; // Contains a keyword from the blacklist -> removed
 			}
 		}
 		
 		if(match){
+			Logger.getLogger("KeywordFilter").finest("It's a match: " + fileName);
 			return false; // Keyword is contained, not removing
 		} else{
 			if(include.size() == 0) return false;
 			filetree.removeFromParent();
+			Logger.getLogger("KeywordFilter").finest(fileName + " was removed (no match)!");
 			return true; // keyword not contained removing
 		}
 	}

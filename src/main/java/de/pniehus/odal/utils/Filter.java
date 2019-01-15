@@ -1,6 +1,8 @@
 package de.pniehus.odal.utils;
 
 
+import java.util.logging.Logger;
+
 import com.googlecode.lanterna.gui2.AbstractWindow;
 
 import de.pniehus.odal.GUI.OdalGui;

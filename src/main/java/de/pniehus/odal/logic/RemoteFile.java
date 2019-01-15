@@ -1,5 +1,7 @@
 package de.pniehus.odal.logic;
 
+import java.util.logging.Logger;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -44,7 +46,7 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * @param name The name of the directory
 	 */
 	public RemoteFile(String name, int level){
-		super();
+		super(new RemoteFileInfo("Directory: " + name, 0));
 		this.name = name;
 		this.level = level;
 		if(name == null) name = "unknown";
@@ -73,7 +75,8 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * @return
 	 */
 	public boolean isDirectory(){
-		return !isLeaf();
+//		return !getAllowsChildren();
+		return !isLeaf(); // Causes Task.loadFile to crash
 	}
 	
 	/**
@@ -105,10 +108,15 @@ public class RemoteFile extends DefaultMutableTreeNode{
 	 * @return
 	 */
 	public static long countSize(TreeNode root){
+		if(root == null) throw new NullPointerException("root may not be null!");
 		long size = 0;
 		int childcount = root.getChildCount();
 		for(int i = 0; i < childcount; i++){
 			RemoteFile node = (RemoteFile) root.getChildAt(i);
+			if(node.getFileInfo() == null) {
+				Logger.getLogger(RemoteFile.class.getCanonicalName()).config("FileInfo == null! Node: " + node.getName());
+				continue;
+			}
 			size += (node.isDirectory()) ? countSize((TreeNode) node) : node.getFileInfo().getSize();
 		}
 		return size;

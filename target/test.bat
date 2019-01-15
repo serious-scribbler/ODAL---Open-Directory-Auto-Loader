@@ -1,1 +1,0 @@
-cd .. && mvn compile package && cd target && runConsole.bat
